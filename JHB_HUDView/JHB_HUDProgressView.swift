@@ -7,6 +7,7 @@
 import UIKit
 
 class JHB_HUDProgressView: UIView {
+    // MARK: - Params
     /*指示视图*//*IndicatorView*/
     var actView         = UIActivityIndicatorView()
     /*备用指示视图*//*SpareIndicatorView*/
@@ -24,6 +25,7 @@ class JHB_HUDProgressView: UIView {
     /*两边的间隔*//*TheMarginOfLeftAndRight*/
     var kContent = NSString.init()
   
+    // MARK: - Interface
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setSubViews()

@@ -74,36 +74,20 @@ public class JHB_HUDDiyManager: UIView {
     }
     
     
-    // MARK: About Notification
-    // 1⃣️remove
+    
+    // MARK: About Screen Rotation
+    // 1⃣️Remove Notification
     private func RemoveNotification() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    // 2⃣️register
+    // 2⃣️register Notification
     private func registerDeviceOrientationNotification() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.transformWindow(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
     }
     
-    // MARK - 当前根控制器
-    func topviewController() -> UIViewController {
-        return self.topViewControllerWithRootViewController((UIApplication.sharedApplication().keyWindow?.rootViewController)!)
-    }
-    func topViewControllerWithRootViewController(rootViewController:UIViewController) -> UIViewController {
-        if rootViewController.isKindOfClass(UITabBarController) {
-            let tabbarVc = rootViewController as! UITabBarController
-            return self.topViewControllerWithRootViewController((tabbarVc.selectedViewController)!)
-        }else if rootViewController.isKindOfClass(UINavigationController) {
-            let navVc = rootViewController as! UINavigationController
-            return self.topViewControllerWithRootViewController((navVc.visibleViewController)!)
-        }else if (rootViewController.presentedViewController != nil){
-            let presentVc = rootViewController.presentedViewController
-            return self.topViewControllerWithRootViewController((presentVc)!)
-        }
-        return rootViewController
-    }
-    
-    // transform
+        
+    // 3️⃣Transform Of Screen
     @objc private func transformWindow(notification: NSNotification) {
         var rotation: CGFloat = 0
         if self.InitOrientation == .Portrait{
@@ -173,7 +157,7 @@ public class JHB_HUDDiyManager: UIView {
         }
     }
  
-    // center
+    // 4️⃣Get Center Of Screen
     private  func getCenter() -> CGPoint {
         let rv = UIApplication.sharedApplication().keyWindow?.subviews.first as UIView!
         if self.InitOrientation == .Portrait{
@@ -204,7 +188,7 @@ public class JHB_HUDDiyManager: UIView {
         return rv.center
 
     }
-    // dismiss
+    // 5️⃣Init Screen's Condition
     @objc private func dismiss() {
         var timer: dispatch_source_t?
         if let _ = timer {
@@ -219,8 +203,7 @@ public class JHB_HUDDiyManager: UIView {
 public extension JHB_HUDDiyManager{
     
     // MARK: - 1⃣️单纯显示DIY进程中(Just Show In DIY-Progress)
-    public func showDIYProgressWithType(img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {// DEFAULT
-        
+    public func showDIYProgressWithType(img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
         self.coreView.diyShowImage = img
         self.coreView.diySpeed = diySpeed
         self.coreView.diyHudType = diyHudType.hashValue
@@ -740,6 +723,7 @@ public extension JHB_HUDDiyManager{
         }
     }
     
+    // MARK: - 新增适应屏幕旋转相关
     /*************➕保持适应屏幕旋转前提下实现移除➕************/
     
     func SuperInitStatus() {

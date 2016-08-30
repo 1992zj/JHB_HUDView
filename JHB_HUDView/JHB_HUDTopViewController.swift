@@ -6,14 +6,13 @@
 
 import UIKit
 class JHB_HUDTopViewController: UIViewController{
-    
+    // MARK: - Params
     var kIfCanRotated: Bool = true
     var orientation = UIDevice.currentDevice().orientation
     
     // MARK: - Interface
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
     }
 
@@ -26,7 +25,6 @@ class JHB_HUDTopViewController: UIViewController{
     }
     
     // MARK: - 处理通知
-   
     func cannotRotate(noti:NSNotification) {
         
         let kOrientation = noti.object as! CGFloat

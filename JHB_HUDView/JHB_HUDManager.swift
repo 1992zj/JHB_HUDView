@@ -20,11 +20,11 @@ public class JHB_HUDManager: UIView {
     var coreViewRect  = CGRect()
     /*核心视图内部统一间隔*//*The Uniformed Margin Inside Core View Part*/
     var kMargin : CGFloat = 10
-    // 定义当前类型
+    /*定义当前类型*//*Define Current Type*/
     var type : NSInteger = 0
-    
-    
+    /*之前的屏幕旋转类型*//*The Screen Rotation Type Of Previous*/
     var PreOrientation = UIDevice.currentDevice().orientation
+    /*初始化时的屏幕旋转类型*//*The Screen Rotation Type Of Initial-time*/
     var InitOrientation = UIDevice.currentDevice().orientation
     
     // MARK: - Interface
@@ -73,6 +73,13 @@ public class JHB_HUDManager: UIView {
         self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
     }
     
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        
+    }
+    
+
+    // MARK: - ShowAndHideWithAnimation
     // 只显示信息内容时的CoreView的行为效果(The Behavior Effect Of 'CoreView' When Just Show Message-Content)
     @objc private func coreViewShowAndHideWithAnimation(delay:Double){
         UIView.animateWithDuration(0.65, animations: {
@@ -359,25 +366,17 @@ public class JHB_HUDManager: UIView {
         }
     }
     
-    
-    override public func layoutSubviews() {
-        super.layoutSubviews()
-        
-    }
-    
-    
-    
-    // MARK: About Notification
-    // 1⃣️remove
+    // MARK: About Screen Rotation
+    // 1⃣️Remove Notification
     private func RemoveNotification() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    // 2⃣️register
+    // 2⃣️register Notification
     private func registerDeviceOrientationNotification() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.transformWindow(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
     }
-    // transform
+    // 3️⃣Transform Of Screen
     @objc private func transformWindow(notification: NSNotification) {
         var rotation: CGFloat = 0
         if self.InitOrientation == .Portrait{
@@ -447,7 +446,7 @@ public class JHB_HUDManager: UIView {
         }
     }
     
-    // center
+    // 4️⃣Get Center Of Screen
     private  func getCenter() -> CGPoint {
         let rv = UIApplication.sharedApplication().keyWindow?.subviews.first as UIView!
         if self.InitOrientation == .Portrait{
@@ -478,7 +477,7 @@ public class JHB_HUDManager: UIView {
         return rv.center
         
     }
-    // dismiss
+    // 5️⃣Init Screen's Condition
     @objc private func dismiss() {
         var timer: dispatch_source_t?
         if let _ = timer {
@@ -493,7 +492,7 @@ public class JHB_HUDManager: UIView {
 
 public extension JHB_HUDManager{
     
-    // MARK: - 1⃣️单纯显示进程中(Just Show In Progress❤️Type:FromBottomType)
+    // MARK: - 1⃣️单纯显示进程中(Just Show In Progress❤️Default Type:FromBottomType)
     public func showProgress() {// DEFAULT
         NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveNoMsg", object: nil)
         /*重写位置*/
@@ -657,7 +656,7 @@ public extension JHB_HUDManager{
         
     }
     
-    // MARK: - 2⃣️显示进程及文字(Show InProgress-Status And The Words Message❤️Type:FromBottomType)
+    // MARK: - 2⃣️显示进程及文字(Show InProgress-Status And The Words Message❤️Default Type:FromBottomType)
     public func showProgressMsgs(msgs:NSString) {
         coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
             NSFontAttributeName:UIFont.systemFontOfSize(15.0)
@@ -878,17 +877,15 @@ public extension JHB_HUDManager{
     }
     
     
-    // MARK: - 3⃣️显示文字信息并完成隐藏(Show The Words_Message And Hidden When Finished❤️Type:FromBottomType)
+    // MARK: - 3⃣️显示文字信息并完成隐藏(Show The Words_Message And Hidden When Finished❤️Default Type:FromBottomType)
     /*
-     ********
-     ***There Are Two Methods For The Type Of 'Just-Show-Message' , The First One is 'Show-Multi-Line',You Can Use This One To Sure That You Can Display Multi Line Message
-     *********
-     ***Parameters:
-     'msgs':It is The Content That You Want To Display;
-     'coreInSet':It Is The Value That Decide The Margin Between CoreView And The Main-Window(Just Including CoreView's Left To Window's Left Or CoreView's Right To Window's Right)
-     'labelInSet':It Is The Value That Decide The Margin Between CoreView And The Message-Label(Just Including CoreView's Left To Label's Left Or CoreView's Right To Label's Right)
-     *********
-     ***PS : You'd Better Be Sure That  The Addition Of 'coreInSet'*2 And 'labelInSet'*2 Lower Than 'SCREEN_WIDTH - 30' ,Or It Will Reset The Margin Value Be 30 Both CoreView-To-Window And Label-To-Window     */
+     There Are Two Methods For The Type Of 'Just-Show-Message' , The First One is 'Show-Multi-Line',You Can Use This One To Sure That You Can Display Multi Line Message
+     Parameters:
+         --'msgs':It is The Content That You Want To Display
+         --'coreInSet':It Is The Value That Decide The Margin Between CoreView And The Main-Window(Just Including CoreView's Left To Window's Left Or CoreView's Right To Window's Right)
+         --'labelInSet':It Is The Value That Decide The Margin Between CoreView And The Message-Label(Just Including CoreView's Left To Label's Left Or CoreView's Right To Label's Right)
+     PS : You'd Better Be Sure That  The Addition Of 'coreInSet'*2 And 'labelInSet'*2 Lower Than 'SCREEN_WIDTH - 30' ,Or It Will Reset The Margin Value Be 30 Both CoreView-To-Window And Label-To-Window     
+     */
     // ❤️<一>:显示多行(Show Multi Line)
     public func showMultiLine(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double){
         var KCore = coreInSet
@@ -1175,8 +1172,7 @@ public extension JHB_HUDManager{
     
     // ❤️<二>:显示单行(Show Single Line)
     /*
-     *********
-     ***There Is Only One Paramter,That Is The Content You Want To Display ,And If You Want To Show A Brief Message Or Just One-Line Message,You All Can Use The One!
+     There Is Only One Paramter,That Is The Content You Want To Display ,And If You Want To Show A Brief Message Or Just One-Line Message,You All Can Use The One!
      */
     public func show(msgs:NSString) {// DEFAULT
         coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 150000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
@@ -1394,7 +1390,7 @@ public extension JHB_HUDManager{
         
     }
     
-    // MARK: - 隐藏(Hidden❤️Type:dissolveToTop)
+    // MARK: - 隐藏(Hidden❤️Default Type:dissolveToTop)
     public func hideProgress() {// DEFAULT
         self.performSelector(#selector(JHB_HUDManager.hideWithAnimation), withObject: self, afterDelay: 0.6)
     }
@@ -1402,7 +1398,7 @@ public extension JHB_HUDManager{
         self.hideProgress()
     }
     
-    
+    // MARK: - 新增适应屏幕旋转相关
     /*************➕保持适应屏幕旋转前提下实现移除➕************/
     
     func SuperInitStatus() {

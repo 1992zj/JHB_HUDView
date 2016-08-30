@@ -6,7 +6,7 @@
 
 import UIKit
 class JHB_HUDDiyProgressView: UIView {
-    
+    // MARK: - Params
     /*自定义图片*//*DiyImageView*/
     var diyImageView       = UIImageView()
     /*预备自定义图片*//*DiySpareImageView*/
@@ -32,6 +32,7 @@ class JHB_HUDDiyProgressView: UIView {
     /*两边的间隔*//*TheMarginOfLeftAndRight*/
     var kContent = NSString.init()
     
+    // MARK: - Interface
     override init(frame: CGRect) {
         super.init(frame: frame)
         ifChangeImgView = false
@@ -216,10 +217,8 @@ class JHB_HUDDiyProgressView: UIView {
         _ = 0
         var images=[UIImage]()
         for num  in 1 ... self.diyImgsNumber {
-
-            let img=UIImage(named: "\(self.diyShowImage)" + "\(num)"+".png")
-            images.append(img!)
-
+            guard let img=UIImage(named: "\(self.diyShowImage)" + "\(num)"+".png") else {return}
+            images.append(img)
         }
         
         if ifChangeImgView == true {
