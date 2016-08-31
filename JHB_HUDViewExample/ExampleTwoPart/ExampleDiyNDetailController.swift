@@ -680,7 +680,7 @@ class ExampleDiyNDetailController: JHB_HUDTopViewController,UITableViewDelegate,
         case HUDType.kHUDTypeScaleFromInsideToOutside.hashValue:
             switch currentImageType {
             case diyImageType.diyImageTypeJustImage.hashValue:
-                JHB_HUDView.showProgressOfDIYTypeWith("dropdown_anim_loading4", diySpeed: 0.65, diyHudType: DiyHUDType.kDiyHUDTypeRotateWithZ, HudType: HUDType.kHUDTypeScaleFromInsideToOutside)
+                JHB_HUDView.showProgressOfDIYTypeWith("TaiChi", diySpeed: 0.65, diyHudType: DiyHUDType.kDiyHUDTypeRotateWithZ, HudType: HUDType.kHUDTypeScaleFromInsideToOutside)
                 self.performSelector(#selector(hide), withObject: self, afterDelay: 3)
                 break
             case diyImageType.diyImageTypeImageArray.hashValue:

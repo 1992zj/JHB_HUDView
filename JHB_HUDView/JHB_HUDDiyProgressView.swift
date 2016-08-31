@@ -74,7 +74,7 @@ class JHB_HUDDiyProgressView: UIView {
     func resetSubViews() {
         
         self.diyImageView.frame = CGRectMake(self.bounds.size.width/2-25 ,CGRectGetMidY(self.bounds)-35 ,50 ,50 )
-        self.diyMsgLabel.frame = CGRectMake((self.bounds.size.width - (diyMsgLabelWidth - 2 * kMargin))/2, CGRectGetMidY(self.bounds)+10, diyMsgLabelWidth - 2 * kMargin, 18)
+        self.diyMsgLabel.frame = CGRectMake((self.bounds.size.width - (diyMsgLabelWidth - 2 * kMargin))/2, CGRectGetMidY(self.bounds)+25, diyMsgLabelWidth - 2 * kMargin, 18)
         self.diySpareImageView.frame = CGRectMake(0 ,0 ,50 ,50 )
         self.diySpareImageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2)
     }
@@ -98,14 +98,7 @@ class JHB_HUDDiyProgressView: UIView {
         self.diyMsgLabel.hidden = true
         self.diySpareImageView.hidden = false
         self.JudgeIfNeedAnimation()
-        let obValue = noti.object as! CGFloat
-        var newObValue = CGFloat()
-        if obValue < 1 {
-            newObValue = 0.9
-        }else {
-            newObValue = 1.05
-        }
-        self.diySpareImageView.transform = CGAffineTransformScale(self.diySpareImageView.transform, 1/newObValue, 1/newObValue)
+        self.diySpareImageView.transform = CGAffineTransformScale(self.diySpareImageView.transform, 1, 1)
     }
     func resetSubViewsForJHB_DIYHUD_haveMsg() {
         ifChangeImgView = false
@@ -113,18 +106,17 @@ class JHB_HUDDiyProgressView: UIView {
         self.diyMsgLabel.hidden = false
         self.diySpareImageView.hidden = true
         self.JudgeIfNeedAnimation()
-        self.diyMsgLabel.frame = CGRectMake(0, CGRectGetMaxY(self.diyImageView.bounds), diyMsgLabelWidth + 2 * kMargin, 18)
     }
     func resetSubViewsForJHB_DIYHUD_haveMsgWithScale(noti:NSNotification) {
         ifChangeImgView = false
         self.diyImageView.hidden = false
         self.diyMsgLabel.hidden = false
         self.diySpareImageView.hidden = true
-        self.JudgeIfNeedAnimation()
-        let obValue = noti.object as! CGFloat
-        self.diyMsgLabel.frame = CGRectMake((self.bounds.size.width - diyMsgLabelWidth)/2,  CGRectGetMaxY(self.diyImageView.bounds) + 10, diyMsgLabelWidth - 2 * kMargin, 18)
+        let obValue = noti.object as! CGFloat 
         self.diyImageView.transform = CGAffineTransformScale(self.diyImageView.transform, 1/obValue, 1/obValue)
         self.diyMsgLabel.transform = CGAffineTransformScale(self.diyMsgLabel.transform, 1/obValue, 1/obValue)
+        self.JudgeIfNeedAnimation()
+        
     }
     
     // MARK: - Judge Different Show-Type

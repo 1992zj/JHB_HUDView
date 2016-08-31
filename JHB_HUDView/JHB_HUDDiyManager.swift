@@ -342,12 +342,12 @@ public extension JHB_HUDDiyManager{
         var kScaleValue : CGFloat = 0
         switch type {
         case .kHUDTypeScaleFromInsideToOutside:
-            kInitValue = 45
-            kScaleValue = 1.78
+            kInitValue = 85
+            kScaleValue = 1.28
             break
         case .kHUDTypeScaleFromOutsideToInside:
-            kInitValue = 120
-            kScaleValue = 0.67
+            kInitValue = 130
+            kScaleValue = 0.85
             break
         default:
             
@@ -434,7 +434,7 @@ public extension JHB_HUDDiyManager{
             msgLabelWidth = 80
         }
         NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
+        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 105)
         self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
@@ -476,7 +476,7 @@ public extension JHB_HUDDiyManager{
         self.coreView.diyMsgLabel.text = msgs as String
         
         NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
+        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 105)
         self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + value)
         self.ResetWindowPosition()
         
@@ -515,7 +515,7 @@ public extension JHB_HUDDiyManager{
         self.coreView.diyMsgLabel.text = msgs as String
         
         NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
+        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 105)
         self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
@@ -547,12 +547,12 @@ public extension JHB_HUDDiyManager{
         case .kHUDTypeScaleFromInsideToOutside:
             kScaleValue = 1.05
             iniWidthValue = (CoreWidth + 10)/kScaleValue
-            iniHeightValue = 80/kScaleValue
+            iniHeightValue = 105/kScaleValue
             break
         case .kHUDTypeScaleFromOutsideToInside:
             kScaleValue = 0.90
             iniWidthValue = CoreWidth/kScaleValue
-            iniHeightValue = 80/kScaleValue
+            iniHeightValue = 105/kScaleValue
             break
         default:
             
