@@ -4,15 +4,15 @@
 <br>
 <br>
 <h2 align="left">简介</h2><br>
-这是一款在swift2.2和目标设备8.2及更新的环境最为简单可行的实现并展示进程挡板(HUD)的插件
+这是一款在>=swift3.0和目标设备>=8.0及更新的环境最为简单可行的实现并展示进程挡板(HUD)的插件
 <br>
 <br>
 <h2 align="left">详情</h2><br>
 这是一款用swift语言编写,可用于展示进程信息及进程的,与MBProgressHUD和SVProgressHUD基础功能相似的轻量级插件,可以迅速实现控制器内展示你所需要的挡板效果.<br>
 <h3 align="left">一,基本:</h3><br>
-<1>开发环境:Xcode7.2 及以上<br>
-<2>目标环境:iOS8.2 及以上<br>
-<3>语言版本:swift2.2 及以上<br>
+<1>开发环境:Xcode8.0 及以上<br>
+<2>目标环境:iOS8.0 及以上<br>
+<3>语言版本:swift3.0 及以上<br>
 <br>
 <br>
 <h3 align="left">二,在该应用中,截止目前有以下几类方法可供开发者使用:</h3><br>
@@ -35,7 +35,7 @@
 <br>
 <br>
 <h2 align="left">Brief</h2><br>
-The Easiest Way To Realize Showing Progress HUD With Swift2.2 And Deployment Target8.2 And Latter <br>
+The Easiest Way To Realize Showing Progress HUD With Swift>=3.0 And Deployment Target>=8.0 And Latter <br>
 <br>
 <br>
 <h2 align="left">Detials</h2><br>
@@ -43,9 +43,9 @@ This is a Lightweight plug-in edited by Swift can show progress-effect and progr
 <br>
 <br>
 <h3 align="left">First,Basis:</h3><br>
-<one>Explore Environment:Xcode7.2 and higher<br>
-<two>Aim Environment:iOS8.2 and higher<br>
-<three>Language Version:Swif2.2 and higher<br>
+<one>Explore Environment:Xcode8.0 and higher<br>
+<two>Aim Environment:iOS8.0 and higher<br>
+<three>Language Version:Swif3.0 and higher<br>
 <br>
 <br>
 <h3 align="left">Second,There are several methods can be used:</h3><br>
