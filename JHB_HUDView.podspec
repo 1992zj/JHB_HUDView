@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name          = "JHB_HUDView"
-  s.version       = "0.1.3"
-  s.summary       = "Provide Many Effect-types!"
+  s.version       = "0.1.4"
+  s.summary       = "Provide Many Effect-types!(Swift Type >= 3.0)"
   s.description   =  "This is a plugin to show your application is in-progress and There are some different relizations offerred! You can choose the related-one and copy it to your projectfile ,then use it!"
   s.homepage      = "https://github.com/BruceFight/JHB_HUDView"
   s.license       = { :type => "MIT", :file => "LICENSE" }
-  s.platform      = :ios, "8.2"
+  s.platform      = :ios, "8.0"
   s.author        = { "CoderBala" => '1050848821@qq.com' }
   s.source        = { :git => 'https://github.com/BruceFight/JHB_HUDView.git', :tag =>  s.version }
   s.source_files  = "JHB_HUDView/*"
