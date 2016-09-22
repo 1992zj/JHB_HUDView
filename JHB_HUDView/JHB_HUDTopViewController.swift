@@ -41,6 +41,7 @@ class JHB_HUDTopViewController: UIViewController{
         kIfCanRotated = false
         self.shouldAutorotate
         self.supportedInterfaceOrientations
+
     }
     
     func canRotate() {
@@ -61,6 +62,7 @@ class JHB_HUDTopViewController: UIViewController{
         return true
     }
 
+    
     override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
         if kIfCanRotated == true {
             return .all
