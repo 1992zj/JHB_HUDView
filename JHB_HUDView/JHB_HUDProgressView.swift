@@ -29,14 +29,14 @@ class JHB_HUDProgressView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setSubViews()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveNoMsg), name: "JHB_HUD_haveNoMsg", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveNoMsgWithScale(_:)), name: "JHB_HUD_haveNoMsgWithScale", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveMsg), name: "JHB_HUD_haveMsg", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveMsgWithScale(_:)), name: "JHB_HUD_haveMsg_WithScale", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgShow), name: "JHB_HUD_onlyAMsgShow", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgShowWithScale(_:)), name: "JHB_HUD_onlyAMsgShowWithScale", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgMultipleShow), name: "JHB_HUD_onlyAMsgMultipleShow", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgMultipleShowWithScale(_:)), name: "JHB_HUD_onlyAMsgMultipleShowWithScale", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveNoMsg), name: NSNotification.Name(rawValue: "JHB_HUD_haveNoMsg"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveNoMsgWithScale(_:)), name: NSNotification.Name(rawValue: "JHB_HUD_haveNoMsgWithScale"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveMsg), name: NSNotification.Name(rawValue: "JHB_HUD_haveMsg"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_haveMsgWithScale(_:)), name: NSNotification.Name(rawValue: "JHB_HUD_haveMsg_WithScale"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgShow), name: NSNotification.Name(rawValue: "JHB_HUD_onlyAMsgShow"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgShowWithScale(_:)), name: NSNotification.Name(rawValue: "JHB_HUD_onlyAMsgShowWithScale"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgMultipleShow), name: NSNotification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShow"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDProgressView.resetSubViewsForJHB_HUD_onlyAMsgMultipleShowWithScale(_:)), name: NSNotification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShowWithScale"), object: nil)
         
         
         self.addSubview(self.actView)
@@ -52,35 +52,35 @@ class JHB_HUDProgressView: UIView {
     func setSubViews(){
         
         self.actView = UIActivityIndicatorView.init()
-        self.actView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.WhiteLarge
+        self.actView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
         self.actView.hidesWhenStopped = true
         self.actView.startAnimating()
         
         self.spareActView = UIActivityIndicatorView.init()
-        self.spareActView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.WhiteLarge
+        self.spareActView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
         self.spareActView.hidesWhenStopped = true
         self.spareActView.stopAnimating()
         
         self.spareMsgLabel = UILabel.init()
-        self.spareMsgLabel.textColor = UIColor.whiteColor()
-        self.spareMsgLabel.font = UIFont.systemFontOfSize(15.0)
-        self.spareMsgLabel.textAlignment = NSTextAlignment.Center
-        self.spareMsgLabel.hidden = true
+        self.spareMsgLabel.textColor = UIColor.white
+        self.spareMsgLabel.font = UIFont.systemFont(ofSize: 15.0)
+        self.spareMsgLabel.textAlignment = NSTextAlignment.center
+        self.spareMsgLabel.isHidden = true
         self.spareMsgLabel.sizeToFit()
         
         self.msgLabel = UILabel.init()
-        self.msgLabel.textColor = UIColor.whiteColor()
-        self.msgLabel.font = UIFont.systemFontOfSize(15.0)
-        self.msgLabel.textAlignment = NSTextAlignment.Center
+        self.msgLabel.textColor = UIColor.white
+        self.msgLabel.font = UIFont.systemFont(ofSize: 15.0)
+        self.msgLabel.textAlignment = NSTextAlignment.center
         self.msgLabel.sizeToFit()
     }
     
     func resetSubViews() {
 
-        self.actView.frame = CGRectMake(self.bounds.size.width/2-25 ,CGRectGetMidY(self.bounds)-35 ,50 ,50 )
-        self.msgLabel.frame = CGRectMake((self.bounds.size.width - (msgLabelWidth - 2 * kMargin))/2, CGRectGetMidY(self.bounds)+10, msgLabelWidth - 2 * kMargin, 18)
-        self.spareActView.frame = CGRectMake((self.bounds.size.width - 50) / 2, (self.bounds.size.height - 50) / 2, 50, 50)
-        self.spareMsgLabel.center = CGPointMake(self.bounds.width / 2, self.bounds.height / 2)
+        self.actView.frame = CGRect(x: self.bounds.size.width/2-25 ,y: self.bounds.midY-35 ,width: 50 ,height: 50 )
+        self.msgLabel.frame = CGRect(x: (self.bounds.size.width - (msgLabelWidth - 2 * kMargin))/2, y: self.bounds.midY+10, width: msgLabelWidth - 2 * kMargin, height: 18)
+        self.spareActView.frame = CGRect(x: (self.bounds.size.width - 50) / 2, y: (self.bounds.size.height - 50) / 2, width: 50, height: 50)
+        self.spareMsgLabel.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
     }
     
     override func layoutSubviews() {
@@ -93,56 +93,56 @@ class JHB_HUDProgressView: UIView {
         self.actView.stopAnimating()
         self.spareActView.startAnimating()
     }
-    func resetSubViewsForJHB_HUD_haveNoMsgWithScale(noti:NSNotification) {
+    func resetSubViewsForJHB_HUD_haveNoMsgWithScale(_ noti:Notification) {
         let obValue = noti.object as! CGFloat
         self.actView.stopAnimating()
         self.spareActView.startAnimating()
-        self.spareActView.transform = CGAffineTransformScale(self.actView.transform, 1/obValue, 1/obValue)
+        self.spareActView.transform = self.actView.transform.scaledBy(x: 1/obValue, y: 1/obValue)
     }
     func resetSubViewsForJHB_HUD_haveMsg() {
-        self.msgLabel.frame = CGRectMake(0, CGRectGetMaxY(self.actView.bounds), msgLabelWidth + 2 * kMargin, 18)
+        self.msgLabel.frame = CGRect(x: 0, y: self.actView.bounds.maxY, width: msgLabelWidth + 2 * kMargin, height: 18)
     }
-    func resetSubViewsForJHB_HUD_haveMsgWithScale(noti:NSNotification){
+    func resetSubViewsForJHB_HUD_haveMsgWithScale(_ noti:Notification){
         let obValue = noti.object as! CGFloat
-        self.msgLabel.frame = CGRectMake((self.bounds.size.width - msgLabelWidth)/2,  CGRectGetMaxY(self.actView.bounds) + 10, msgLabelWidth - 2 * kMargin, 18)
-        self.actView.transform = CGAffineTransformScale(self.actView.transform, 1/obValue, 1/obValue)
-        self.msgLabel.transform = CGAffineTransformScale(self.msgLabel.transform, 1/obValue, 1/obValue)
+        self.msgLabel.frame = CGRect(x: (self.bounds.size.width - msgLabelWidth)/2,  y: self.actView.bounds.maxY + 10, width: msgLabelWidth - 2 * kMargin, height: 18)
+        self.actView.transform = self.actView.transform.scaledBy(x: 1/obValue, y: 1/obValue)
+        self.msgLabel.transform = self.msgLabel.transform.scaledBy(x: 1/obValue, y: 1/obValue)
         
     }
     func resetSubViewsForJHB_HUD_onlyAMsgShow() {
-        self.spareMsgLabel.hidden = false
-        self.msgLabel.hidden = true
+        self.spareMsgLabel.isHidden = false
+        self.msgLabel.isHidden = true
         self.spareMsgLabel.numberOfLines = 1
         self.spareMsgLabel.text = self.kContent as String
-        self.spareMsgLabel.frame = CGRectMake(0, 0, msgLabelWidth + 2 * kMargin, self.msgLabelHeight + 20)
-        self.spareMsgLabel.center = CGPointMake(self.bounds.width / 2, self.bounds.height / 2)
+        self.spareMsgLabel.frame = CGRect(x: 0, y: 0, width: msgLabelWidth + 2 * kMargin, height: self.msgLabelHeight + 20)
+        self.spareMsgLabel.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
     }
-    func resetSubViewsForJHB_HUD_onlyAMsgShowWithScale(noti:NSNotification) {
+    func resetSubViewsForJHB_HUD_onlyAMsgShowWithScale(_ noti:Notification) {
         let obValue = noti.object as! CGFloat
-        self.spareMsgLabel.hidden = false
-        self.msgLabel.hidden = true
+        self.spareMsgLabel.isHidden = false
+        self.msgLabel.isHidden = true
         self.spareMsgLabel.numberOfLines = 1
         self.spareMsgLabel.text = self.kContent as String
-        self.spareMsgLabel.frame = CGRectMake(0, 0, msgLabelWidth + 2 * kMargin, self.msgLabelHeight + 20)
-        self.spareMsgLabel.center = CGPointMake(self.bounds.width / 2, self.bounds.height / 2)
-        self.spareMsgLabel.transform = CGAffineTransformScale(self.spareMsgLabel.transform, 1/obValue, 1/obValue)
+        self.spareMsgLabel.frame = CGRect(x: 0, y: 0, width: msgLabelWidth + 2 * kMargin, height: self.msgLabelHeight + 20)
+        self.spareMsgLabel.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
+        self.spareMsgLabel.transform = self.spareMsgLabel.transform.scaledBy(x: 1/obValue, y: 1/obValue)
     }
     func resetSubViewsForJHB_HUD_onlyAMsgMultipleShow() {
-        self.spareMsgLabel.hidden = false
-        self.msgLabel.hidden = true
+        self.spareMsgLabel.isHidden = false
+        self.msgLabel.isHidden = true
         self.spareMsgLabel.numberOfLines = 0
         self.spareMsgLabel.text = self.kContent as String
-        self.spareMsgLabel.frame = CGRectMake(0, 0, msgLabelWidth, self.msgLabelHeight + 20)
-        self.spareMsgLabel.center = CGPointMake(self.bounds.width / 2, self.bounds.height / 2)
+        self.spareMsgLabel.frame = CGRect(x: 0, y: 0, width: msgLabelWidth, height: self.msgLabelHeight + 20)
+        self.spareMsgLabel.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
     }
-    func resetSubViewsForJHB_HUD_onlyAMsgMultipleShowWithScale(noti:NSNotification) {
+    func resetSubViewsForJHB_HUD_onlyAMsgMultipleShowWithScale(_ noti:Notification) {
         let obValue = noti.object as! CGFloat
-        self.spareMsgLabel.hidden = false
-        self.msgLabel.hidden = true
+        self.spareMsgLabel.isHidden = false
+        self.msgLabel.isHidden = true
         self.spareMsgLabel.numberOfLines = 0
         self.spareMsgLabel.text = self.kContent as String
-        self.spareMsgLabel.frame = CGRectMake(0, 0, msgLabelWidth - 2 * kMargin, self.msgLabelHeight + 20)
-        self.spareMsgLabel.center = CGPointMake(self.bounds.width / 2, self.bounds.height / 2)
-        self.spareMsgLabel.transform = CGAffineTransformScale(self.spareMsgLabel.transform, 1/obValue, 1/obValue)
+        self.spareMsgLabel.frame = CGRect(x: 0, y: 0, width: msgLabelWidth - 2 * kMargin, height: self.msgLabelHeight + 20)
+        self.spareMsgLabel.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
+        self.spareMsgLabel.transform = self.spareMsgLabel.transform.scaledBy(x: 1/obValue, y: 1/obValue)
     }
 }

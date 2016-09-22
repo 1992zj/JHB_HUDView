@@ -38,10 +38,10 @@ class JHB_HUDDiyProgressView: UIView {
         ifChangeImgView = false
         diyImgsNumber = 0
         self.setSubViews()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveNoMsg), name: "JHB_DIYHUD_haveNoMsg", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveNoMsgWithScale(_:)), name: "JHB_DIYHUD_haveNoMsgWithScale", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveMsg), name: "JHB_DIYHUD_haveMsg", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveMsgWithScale(_:)), name: "JHB_DIYHUD_haveMsg_WithScale", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveNoMsg), name: NSNotification.Name(rawValue: "JHB_DIYHUD_haveNoMsg"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveNoMsgWithScale(_:)), name: NSNotification.Name(rawValue: "JHB_DIYHUD_haveNoMsgWithScale"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveMsg), name: NSNotification.Name(rawValue: "JHB_DIYHUD_haveMsg"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDDiyProgressView.resetSubViewsForJHB_DIYHUD_haveMsgWithScale(_:)), name: NSNotification.Name(rawValue: "JHB_DIYHUD_haveMsg_WithScale"), object: nil)
         self.addSubview(self.diyImageView)
         self.addSubview(self.diyMsgLabel)
         self.addSubview(self.diySpareImageView)
@@ -56,27 +56,27 @@ class JHB_HUDDiyProgressView: UIView {
         self.diyImageView = UIImageView.init()
         self.diyImageView.clipsToBounds = true
         self.diyImageView.sizeToFit()
-        self.diyImageView.contentMode = UIViewContentMode.ScaleAspectFit
+        self.diyImageView.contentMode = UIViewContentMode.scaleAspectFit
         
         self.diyMsgLabel = UILabel.init()
-        self.diyMsgLabel.textColor = UIColor.whiteColor()
-        self.diyMsgLabel.font = UIFont.systemFontOfSize(15.0)
-        self.diyMsgLabel.textAlignment = NSTextAlignment.Center
+        self.diyMsgLabel.textColor = UIColor.white
+        self.diyMsgLabel.font = UIFont.systemFont(ofSize: 15.0)
+        self.diyMsgLabel.textAlignment = NSTextAlignment.center
         self.diyMsgLabel.sizeToFit()
         
         self.diySpareImageView = UIImageView.init()
-        self.diySpareImageView.hidden = true
+        self.diySpareImageView.isHidden = true
         self.diySpareImageView.clipsToBounds = true
         self.diySpareImageView.sizeToFit()
-        self.diySpareImageView.contentMode = UIViewContentMode.ScaleAspectFit
+        self.diySpareImageView.contentMode = UIViewContentMode.scaleAspectFit
     }
     
     func resetSubViews() {
         
-        self.diyImageView.frame = CGRectMake(self.bounds.size.width/2-25 ,CGRectGetMidY(self.bounds)-35 ,50 ,50 )
-        self.diyMsgLabel.frame = CGRectMake((self.bounds.size.width - (diyMsgLabelWidth - 2 * kMargin))/2, CGRectGetMidY(self.bounds)+25, diyMsgLabelWidth - 2 * kMargin, 18)
-        self.diySpareImageView.frame = CGRectMake(0 ,0 ,50 ,50 )
-        self.diySpareImageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2)
+        self.diyImageView.frame = CGRect(x: self.bounds.size.width/2-25 ,y: self.bounds.midY-35 ,width: 50 ,height: 50 )
+        self.diyMsgLabel.frame = CGRect(x: (self.bounds.size.width - (diyMsgLabelWidth - 2 * kMargin))/2, y: self.bounds.midY+25, width: diyMsgLabelWidth - 2 * kMargin, height: 18)
+        self.diySpareImageView.frame = CGRect(x: 0 ,y: 0 ,width: 50 ,height: 50 )
+        self.diySpareImageView.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
     }
     
     override func layoutSubviews() {
@@ -87,34 +87,34 @@ class JHB_HUDDiyProgressView: UIView {
     // MARK: - NotificationCenter
     func resetSubViewsForJHB_DIYHUD_haveNoMsg() {
         ifChangeImgView = true
-        self.diyImageView.hidden = true
-        self.diyMsgLabel.hidden = true
-        self.diySpareImageView.hidden = false
+        self.diyImageView.isHidden = true
+        self.diyMsgLabel.isHidden = true
+        self.diySpareImageView.isHidden = false
         self.JudgeIfNeedAnimation()
     }
-    func resetSubViewsForJHB_DIYHUD_haveNoMsgWithScale(noti:NSNotification) {
+    func resetSubViewsForJHB_DIYHUD_haveNoMsgWithScale(_ noti:Notification) {
         ifChangeImgView = true
-        self.diyImageView.hidden = true
-        self.diyMsgLabel.hidden = true
-        self.diySpareImageView.hidden = false
+        self.diyImageView.isHidden = true
+        self.diyMsgLabel.isHidden = true
+        self.diySpareImageView.isHidden = false
         self.JudgeIfNeedAnimation()
-        self.diySpareImageView.transform = CGAffineTransformScale(self.diySpareImageView.transform, 1, 1)
+        self.diySpareImageView.transform = self.diySpareImageView.transform.scaledBy(x: 1, y: 1)
     }
     func resetSubViewsForJHB_DIYHUD_haveMsg() {
         ifChangeImgView = false
-        self.diyImageView.hidden = false
-        self.diyMsgLabel.hidden = false
-        self.diySpareImageView.hidden = true
+        self.diyImageView.isHidden = false
+        self.diyMsgLabel.isHidden = false
+        self.diySpareImageView.isHidden = true
         self.JudgeIfNeedAnimation()
     }
-    func resetSubViewsForJHB_DIYHUD_haveMsgWithScale(noti:NSNotification) {
+    func resetSubViewsForJHB_DIYHUD_haveMsgWithScale(_ noti:Notification) {
         ifChangeImgView = false
-        self.diyImageView.hidden = false
-        self.diyMsgLabel.hidden = false
-        self.diySpareImageView.hidden = true
+        self.diyImageView.isHidden = false
+        self.diyMsgLabel.isHidden = false
+        self.diySpareImageView.isHidden = true
         let obValue = noti.object as! CGFloat 
-        self.diyImageView.transform = CGAffineTransformScale(self.diyImageView.transform, 1/obValue, 1/obValue)
-        self.diyMsgLabel.transform = CGAffineTransformScale(self.diyMsgLabel.transform, 1/obValue, 1/obValue)
+        self.diyImageView.transform = self.diyImageView.transform.scaledBy(x: 1/obValue, y: 1/obValue)
+        self.diyMsgLabel.transform = self.diyMsgLabel.transform.scaledBy(x: 1/obValue, y: 1/obValue)
         self.JudgeIfNeedAnimation()
         
     }
@@ -122,7 +122,7 @@ class JHB_HUDDiyProgressView: UIView {
     // MARK: - Judge Different Show-Type
     func JudgeIfNeedAnimation() {
         if self.diyShowImage.hasSuffix(".png") {
-            self.diyShowImage.substringToIndex(self.diyShowImage.length-4)
+            self.diyShowImage.substring(to: self.diyShowImage.length-4)
         }
         if self.diyImgsNumber == 0 {
             if ifChangeImgView == true {
@@ -148,32 +148,32 @@ class JHB_HUDDiyProgressView: UIView {
             //绕哪个轴，那么就改成什么：这里是绕y轴 ---> transform.rotation.y
             let rotationAnimation = CABasicAnimation.init(keyPath: "transform.rotation.y")
             //旋转角度
-            rotationAnimation.toValue = NSNumber.init(double: M_PI)
+            rotationAnimation.toValue = NSNumber.init(value: M_PI as Double)
             //每次旋转的时间（单位秒）
             rotationAnimation.duration = self.diySpeed
-            rotationAnimation.cumulative = true
+            rotationAnimation.isCumulative = true
             //重复旋转的次数，如果你想要无数次，那么设置成MAXFLOAT
             rotationAnimation.repeatCount = MAXFLOAT
             if ifChangeImgView == true {
-                self.diySpareImageView.layer.addAnimation(rotationAnimation, forKey: "transform.rotation.y")
+                self.diySpareImageView.layer.add(rotationAnimation, forKey: "transform.rotation.y")
             }else if ifChangeImgView == false {
-                self.diyImageView.layer.addAnimation(rotationAnimation, forKey: "transform.rotation.y")
+                self.diyImageView.layer.add(rotationAnimation, forKey: "transform.rotation.y")
             }
             break
         case DiyHUDType.kDiyHUDTypeRotateWithZ.hashValue:
             //绕哪个轴，那么就改成什么：这里是z轴 ---> transform.rotation.y
             let rotationAnimation = CABasicAnimation.init(keyPath: "transform.rotation.z")
             //旋转角度
-            rotationAnimation.toValue = NSNumber.init(double: M_PI)
+            rotationAnimation.toValue = NSNumber.init(value: M_PI as Double)
             //每次旋转的时间（单位秒）
             rotationAnimation.duration = self.diySpeed
-            rotationAnimation.cumulative = true
+            rotationAnimation.isCumulative = true
             //重复旋转的次数，如果你想要无数次，那么设置成MAXFLOAT
             rotationAnimation.repeatCount = MAXFLOAT
             if ifChangeImgView == true {
-                 self.diySpareImageView.layer.addAnimation(rotationAnimation, forKey: "transform.rotation.z")
+                 self.diySpareImageView.layer.add(rotationAnimation, forKey: "transform.rotation.z")
             }else if ifChangeImgView == false {
-                 self.diyImageView.layer.addAnimation(rotationAnimation, forKey: "transform.rotation.z")
+                 self.diyImageView.layer.add(rotationAnimation, forKey: "transform.rotation.z")
             }
            
             break
@@ -186,16 +186,16 @@ class JHB_HUDDiyProgressView: UIView {
                  currentTx = self.diyImageView.transform.tx
              }
              
-             shakeAnimation.delegate = self
+//             shakeAnimation.delegate = self
              shakeAnimation.duration = self.diySpeed
              shakeAnimation.repeatCount = MAXFLOAT
              // currentTx + 8, currentTx - 8, currentTx + 5, currentTx - 5,currentTx + 2, currentTx - 2, currentTx
              shakeAnimation.values = [currentTx,currentTx + 10,currentTx, currentTx - 10,currentTx,currentTx + 10,currentTx,currentTx - 10]
              shakeAnimation.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)
              if ifChangeImgView == true {
-                self.diySpareImageView.layer.addAnimation(shakeAnimation, forKey: "transform.translation.x")
+                self.diySpareImageView.layer.add(shakeAnimation, forKey: "transform.translation.x")
              }else if ifChangeImgView == false {
-                self.diyImageView.layer.addAnimation(shakeAnimation, forKey: "transform.translation.x")
+                self.diyImageView.layer.add(shakeAnimation, forKey: "transform.translation.x")
              }
              
             break

@@ -1,3 +1,5 @@
+
+
 //
 //  ExampleRegularDetailController.swift
 //  JHB_HUDViewExample
@@ -18,8 +20,8 @@ public enum coreType{
 class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDelegate,UITableViewDataSource {
     var currentType = NSInteger()
     
-    var SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
-    var SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
+    var SCREEN_WIDTH = UIScreen.main.bounds.size.width
+    var SCREEN_HEIGHT = UIScreen.main.bounds.size.height
     var coretype: coreType? {
         didSet {
             currentType = (coretype?.hashValue)!
@@ -46,69 +48,69 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         self.tableView.delegate = self
         self.tableView.dataSource = self
         // 注册cell
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: ID)
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: ID)
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.none
         self.view.addSubview(self.tableView)
     }
 
     
     // MARK: - Table view data source
-     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
-     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return 9
     }
     
     
-     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(ID, forIndexPath: indexPath)
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ID, for: indexPath)
         cell.textLabel?.numberOfLines = 0
         
-        if indexPath.row == 0 {
+        if (indexPath as NSIndexPath).row == 0 {
             cell.textLabel?.text = "1⃣️Regular-Type kHUDTypeDefaultly"
-        }else if indexPath.row == 1{
+        }else if (indexPath as NSIndexPath).row == 1{
             cell.textLabel?.text = "2⃣️Regular-Type kHUDTypeShowImmediately"
-        }else if indexPath.row == 2{
+        }else if (indexPath as NSIndexPath).row == 2{
             cell.textLabel?.text = "3⃣️Regular-Type kHUDTypeShowSlightly"
-        }else if indexPath.row == 3{
+        }else if (indexPath as NSIndexPath).row == 3{
             cell.textLabel?.text = "4⃣️Regular-Type kHUDTypeShowFromBottomToTop"
-        }else if indexPath.row == 4{
+        }else if (indexPath as NSIndexPath).row == 4{
             cell.textLabel?.text = "5⃣️Regular-Type kHUDTypeShowFromTopToBottom"
-        }else if indexPath.row == 5{
+        }else if (indexPath as NSIndexPath).row == 5{
             cell.textLabel?.text = "6⃣️Regular-Type kHUDTypeShowFromLeftToRight"
-        }else if indexPath.row == 6{
+        }else if (indexPath as NSIndexPath).row == 6{
             cell.textLabel?.text = "7⃣️Regular-Type kHUDTypeShowFromRightToLeft"
-        }else if indexPath.row == 7{
+        }else if (indexPath as NSIndexPath).row == 7{
             cell.textLabel?.text = "8⃣️Regular-Type kHUDTypeScaleFromInsideToOutside"
-        }else if indexPath.row == 8{
+        }else if (indexPath as NSIndexPath).row == 8{
             cell.textLabel?.text = "9⃣️Regular-Type kHUDTypeScaleFromOutsideToInside"
         }
         
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.row == 0 {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).row == 0 {
             self.defaultType()
-        }else if indexPath.row == 1{
+        }else if (indexPath as NSIndexPath).row == 1{
             self.ShowImmediatelyType()
-        }else if indexPath.row == 2{
+        }else if (indexPath as NSIndexPath).row == 2{
             self.ShowSlightlyType()
-        }else if indexPath.row == 3{
+        }else if (indexPath as NSIndexPath).row == 3{
             self.ShowFromBottomToTopType()
-        }else if indexPath.row == 4{
+        }else if (indexPath as NSIndexPath).row == 4{
             self.ShowFromTopToBottomType()
-        }else if indexPath.row == 5{
+        }else if (indexPath as NSIndexPath).row == 5{
             self.ShowFromLeftToRightType()
-        }else if indexPath.row == 6{
+        }else if (indexPath as NSIndexPath).row == 6{
             self.ShowFromRightToLeftType()
-        }else if indexPath.row == 7{
+        }else if (indexPath as NSIndexPath).row == 7{
             self.ScaleFromInsideToOutsideType()
-        }else if indexPath.row == 8{
+        }else if (indexPath as NSIndexPath).row == 8{
             self.ScaleFromOutsideToInsideType()
         }
 
@@ -118,17 +120,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeDefaultly)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeDefaultly)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeDefaultly)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeDefaultly)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeDefaultly)
             break
         default:
             break
@@ -139,17 +141,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeShowImmediately)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowImmediately)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowImmediately)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowImmediately)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowImmediately)
             break
         default:
             break
@@ -160,17 +162,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeShowSlightly)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowSlightly)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowSlightly)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowSlightly)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowSlightly)
             break
         default:
             break
@@ -181,17 +183,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeShowFromBottomToTop)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromBottomToTop)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromBottomToTop)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromBottomToTop)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromBottomToTop)
             break
         default:
             break
@@ -202,17 +204,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeShowFromTopToBottom)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromTopToBottom)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromTopToBottom)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromTopToBottom)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromTopToBottom)
             break
         default:
             break
@@ -223,17 +225,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeShowFromLeftToRight)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromLeftToRight)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromLeftToRight)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromLeftToRight)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromLeftToRight)
             break
         default:
             break
@@ -244,17 +246,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeShowFromRightToLeft)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromRightToLeft)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeShowFromRightToLeft)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromRightToLeft)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeShowFromRightToLeft)
             break
         default:
             break
@@ -265,17 +267,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeScaleFromInsideToOutside)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeScaleFromInsideToOutside)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeScaleFromInsideToOutside)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeScaleFromInsideToOutside)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeScaleFromInsideToOutside)
             break
         default:
             break
@@ -286,17 +288,17 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
         switch currentType {
         case coreType.coreTypeCircle.hashValue:
             JHB_HUDView.showProgressWithType(HUDType.kHUDTypeScaleFromOutsideToInside)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeCircleWithMsg.hashValue:
             JHB_HUDView.showProgressMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeScaleFromOutsideToInside)
-            self.performSelector(#selector(hide), withObject: self, afterDelay: 1)
+            self.perform(#selector(hide), with: self, afterDelay: 1)
             break
         case coreType.coreTypeSingleMsg.hashValue:
             JHB_HUDView.showMsgWithType("Hello CoderBala !", HudType: HUDType.kHUDTypeScaleFromOutsideToInside)
             break
         case coreType.coreTypeMultiMsg.hashValue:
-            JHB_HUDView.showMsgMultiLineWithType(multiStr, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeScaleFromOutsideToInside)
+            JHB_HUDView.showMsgMultiLineWithType(multiStr as NSString, coreInSet: 30, labelInSet: 20, delay: 2, HudType: .kHUDTypeScaleFromOutsideToInside)
             break
         default:
             break
@@ -308,38 +310,38 @@ class ExampleRegularDetailController: JHB_HUDTopViewController ,UITableViewDeleg
     }
 
     // 设置header 和 footer
-     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = UILabel.init(frame: CGRectMake(0, 0, SCREEN_WIDTH, 60))
+     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = UILabel.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 60))
         header.text = "有好多展示的HUDType效果哦~!😊"
         header.sizeToFit()
         header.numberOfLines = 0
-        header.textColor = UIColor.whiteColor()
-        header.font = UIFont.systemFontOfSize(18)
-        header.textAlignment = NSTextAlignment.Center
-        header.backgroundColor = UIColor.orangeColor()
+        header.textColor = UIColor.white
+        header.font = UIFont.systemFont(ofSize: 18)
+        header.textAlignment = NSTextAlignment.center
+        header.backgroundColor = UIColor.orange
         return header
     }
-    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = UILabel.init(frame: CGRectMake(0, 0, SCREEN_WIDTH, 60))
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footer = UILabel.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 60))
         footer.text = "是的,每种展示都是可供选择的哦~!😂"
         footer.sizeToFit()
         footer.numberOfLines = 0
-        footer.textColor = UIColor.whiteColor()
-        footer.font = UIFont.systemFontOfSize(18)
-        footer.textAlignment = NSTextAlignment.Center
-        footer.backgroundColor = UIColor.orangeColor()
+        footer.textColor = UIColor.white
+        footer.font = UIFont.systemFont(ofSize: 18)
+        footer.textAlignment = NSTextAlignment.center
+        footer.backgroundColor = UIColor.orange
         return footer
         
     }
     // ❤️ 如果要展示header 或 footer 就必须要设置他们的高度值!
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 60
     }
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 60
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
 

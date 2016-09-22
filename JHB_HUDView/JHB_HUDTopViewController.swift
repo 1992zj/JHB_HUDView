@@ -8,7 +8,7 @@ import UIKit
 class JHB_HUDTopViewController: UIViewController{
     // MARK: - Params
     var kIfCanRotated: Bool = true
-    var orientation = UIDevice.currentDevice().orientation
+    var orientation = UIDevice.current.orientation
     
     // MARK: - Interface
     override func viewDidLoad() {
@@ -16,42 +16,42 @@ class JHB_HUDTopViewController: UIViewController{
         
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDTopViewController.cannotRotate(_:)), name: "JHB_HUDTopVcCannotRotated", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(JHB_HUDTopViewController.canRotate), name: "JHB_HUDTopVcCanRotated", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDTopViewController.cannotRotate(_:)), name: NSNotification.Name(rawValue: "JHB_HUDTopVcCannotRotated"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(JHB_HUDTopViewController.canRotate), name: NSNotification.Name(rawValue: "JHB_HUDTopVcCanRotated"), object: nil)
         
     }
     
     // MARK: - 处理通知
-    func cannotRotate(noti:NSNotification) {
+    func cannotRotate(_ noti:Notification) {
         
         let kOrientation = noti.object as! CGFloat
         if kOrientation == 1 {
-            orientation = .Portrait
+            orientation = .portrait
         }else if kOrientation == 2 {
-            orientation = .PortraitUpsideDown
+            orientation = .portraitUpsideDown
         }else if kOrientation == 3 {
-            orientation = .LandscapeLeft
+            orientation = .landscapeLeft
         }else if kOrientation == 4 {
-            orientation = .LandscapeRight
+            orientation = .landscapeRight
         }
         
         kIfCanRotated = false
-        self.shouldAutorotate()
-        self.supportedInterfaceOrientations()
+        self.shouldAutorotate
+        self.supportedInterfaceOrientations
     }
     
     func canRotate() {
         kIfCanRotated = true
-        self.shouldAutorotate()
-        self.supportedInterfaceOrientations()
+        self.shouldAutorotate
+        self.supportedInterfaceOrientations
     }
   
     // MARK: - 重写旋转方法
     // ❤️这是在当前使用的控制器中应该使用的重写方法,以阻止旋转后重新实现旋转
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
     
         if kIfCanRotated == true {
             return true
@@ -61,22 +61,22 @@ class JHB_HUDTopViewController: UIViewController{
         return true
     }
 
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
         if kIfCanRotated == true {
-            return .All
+            return .all
         }else if kIfCanRotated == false {
 
-            if orientation == .Portrait {
-                return .Portrait
-            }else if orientation == .PortraitUpsideDown {
-                return .PortraitUpsideDown
-            }else if orientation == .LandscapeLeft {
-                return .LandscapeLeft
-            }else if orientation == .LandscapeRight {
-                return .LandscapeRight
+            if orientation == .portrait {
+                return .portrait
+            }else if orientation == .portraitUpsideDown {
+                return .portraitUpsideDown
+            }else if orientation == .landscapeLeft {
+                return .landscapeLeft
+            }else if orientation == .landscapeRight {
+                return .landscapeRight
             }
         }
-        return .All
+        return .all
     }
     
 }

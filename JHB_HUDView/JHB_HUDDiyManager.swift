@@ -6,12 +6,12 @@
 
 import UIKit
 
-public class JHB_HUDDiyManager: UIView {
-    private  var windowsTemp: [UIWindow] = []
-    private  var timer: dispatch_source_t?
+open class JHB_HUDDiyManager: UIView {
+    fileprivate  var windowsTemp: [UIWindow] = []
+    fileprivate  var timer: DispatchSource?
     // MARK: parameters
-    let SCREEN_WIDTH  = UIScreen.mainScreen().bounds.size.width
-    let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
+    let SCREEN_WIDTH  = UIScreen.main.bounds.size.width
+    let SCREEN_HEIGHT = UIScreen.main.bounds.size.height
     /*透明背景*//*Clear Background*/
     var bgClearView   = UIView()
     /*核心视图*//*Core View Part*/
@@ -23,13 +23,13 @@ public class JHB_HUDDiyManager: UIView {
     /*定义当前类型*//*Current Type*/
     var type : NSInteger = 0
     /*之前的屏幕旋转类型*//*The Screen Rotation Type Of Previous*/
-    var PreOrientation = UIDevice.currentDevice().orientation
+    var PreOrientation = UIDevice.current.orientation
     /*初始化的屏幕旋转类型*//*The Screen Rotation Type Of Initial-status*/
-    var InitOrientation = UIDevice.currentDevice().orientation
+    var InitOrientation = UIDevice.current.orientation
     
     // MARK: - Interface
     override init(frame: CGRect) {
-        super.init(frame: UIScreen.mainScreen().bounds)
+        super.init(frame: UIScreen.main.bounds)
         self.setUp()
     }
     
@@ -42,12 +42,12 @@ public class JHB_HUDDiyManager: UIView {
         self.setSubViews()
         self.addSubview(self.bgClearView)
         self.addSubview(self.coreView)
-        PreOrientation = UIDevice.currentDevice().orientation
-        InitOrientation = UIDevice.currentDevice().orientation
+        PreOrientation = UIDevice.current.orientation
+        InitOrientation = UIDevice.current.orientation
         self.registerDeviceOrientationNotification()
         
-        if PreOrientation != .Portrait {
-            NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUDTopVcCannotRotated", object: self.PreOrientation.hashValue, userInfo: nil)
+        if PreOrientation != .portrait {
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUDTopVcCannotRotated"), object: self.PreOrientation.hashValue, userInfo: nil)
         }
 
     }
@@ -55,147 +55,149 @@ public class JHB_HUDDiyManager: UIView {
     
     func setSubViews() {
         self.bgClearView = UIView.init()
-        self.bgClearView.backgroundColor = UIColor.clearColor()
+        self.bgClearView.backgroundColor = UIColor.clear
         
         self.coreView = JHB_HUDDiyProgressView.init()
         self.coreView.sizeToFit()
         self.coreView.layer.cornerRadius = 10
         self.coreView.layer.masksToBounds = true
-        self.coreView.backgroundColor = UIColor.blackColor()
+        self.coreView.backgroundColor = UIColor.black
         self.coreView.alpha = 0
         
         self.resetSubViews()
     }
     
     func resetSubViews() {
-        self.bgClearView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 70) / 2, (SCREEN_HEIGHT - 70) / 2, 70, 70)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
+        self.bgClearView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: SCREEN_HEIGHT)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 70) / 2, y: (SCREEN_HEIGHT - 70) / 2, width: 70, height: 70)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + 60)
     }
     
     
     
     // MARK: About Screen Rotation
     // 1⃣️Remove Notification
-    private func RemoveNotification() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    fileprivate func RemoveNotification() {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // 2⃣️register Notification
-    private func registerDeviceOrientationNotification() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.transformWindow(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+    fileprivate func registerDeviceOrientationNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.transformWindow(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
         
     // 3️⃣Transform Of Screen
-    @objc private func transformWindow(notification: NSNotification) {
+    @objc fileprivate func transformWindow(_ notification: Notification) {
         var rotation: CGFloat = 0
-        if self.InitOrientation == .Portrait{
-            if self.PreOrientation == .Portrait {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+        if self.InitOrientation == .portrait{
+            if self.PreOrientation == .portrait {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat(M_PI)
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = CGFloat(M_PI/2)
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = CGFloat(M_PI + (M_PI/2))
                 default:
                     break
                 }
-            }else if self.PreOrientation == .PortraitUpsideDown {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+            }else if self.PreOrientation == .portraitUpsideDown {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat((M_PI/2))
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = CGFloat((M_PI/2))
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = CGFloat(M_PI + M_PI/2)
                 default:
                     break
                 }
-            }else if self.PreOrientation == .LandscapeLeft {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+            }else if self.PreOrientation == .landscapeLeft {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat(M_PI)
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = 0
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = CGFloat(M_PI + M_PI/2)
                 default:
                     break
                 }
-            }else if self.PreOrientation == .LandscapeRight {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+            }else if self.PreOrientation == .landscapeRight {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat(M_PI)
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = CGFloat(M_PI/2)
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = 0
                 default:
                     break
                 }
-            }else if self.PreOrientation == .FaceDown ||  self.PreOrientation == .FaceDown {
+            }else if self.PreOrientation == .faceDown ||  self.PreOrientation == .faceDown {
                 return
             }
-        }else if self.InitOrientation == .LandscapeLeft || self.InitOrientation == .LandscapeRight || self.InitOrientation == .PortraitUpsideDown {
+        }else if self.InitOrientation == .landscapeLeft || self.InitOrientation == .landscapeRight || self.InitOrientation == .portraitUpsideDown {
             return
         }
         
-        self.PreOrientation = UIDevice.currentDevice().orientation
+        self.PreOrientation = UIDevice.current.orientation
         windowsTemp.forEach {_ in 
             window!.center = self.getCenter()
-            window!.transform = CGAffineTransformMakeRotation(rotation)
+            window!.transform = CGAffineTransform(rotationAngle: rotation)
         }
     }
  
     // 4️⃣Get Center Of Screen
-    private  func getCenter() -> CGPoint {
-        let rv = UIApplication.sharedApplication().keyWindow?.subviews.first as UIView!
-        if self.InitOrientation == .Portrait{
-            if self.PreOrientation == .Portrait {
-                return rv.center
+    fileprivate  func getCenter() -> CGPoint {
+        let rv = UIApplication.shared.keyWindow?.subviews.first as UIView!
+        let rvWidth = rv?.bounds.width.hashValue
+        let rvHeight = rv?.bounds.height.hashValue
+        if self.InitOrientation == .portrait{
+            if self.PreOrientation == .portrait {
+                return rv!.center
             }else {
-                if rv.bounds.width > rv.bounds.height {
-                    return CGPoint(x: rv.bounds.height/2, y: rv.bounds.width/2)
+                if rvWidth! > rvHeight! {
+                    return CGPoint(x: rv!.bounds.height/2, y: rv!.bounds.width/2)
                 }
             }
-        }else if self.InitOrientation == .LandscapeLeft {
-            if self.PreOrientation == .LandscapeLeft || self.PreOrientation == .LandscapeRight {
-                return rv.center
+        }else if self.InitOrientation == .landscapeLeft {
+            if self.PreOrientation == .landscapeLeft || self.PreOrientation == .landscapeRight {
+                return rv!.center
             }else {
-                if rv.bounds.width > rv.bounds.height {
-                    return CGPoint(x: rv.bounds.height/2, y: rv.bounds.width/2)
+                if rvWidth! > rvHeight! {
+                    return CGPoint(x: rv!.bounds.height/2, y: rv!.bounds.width/2)
                 }
             }
-        }else if self.InitOrientation == .LandscapeRight {
-            if self.PreOrientation == .LandscapeLeft || self.PreOrientation == .LandscapeRight {
-                return rv.center
+        }else if self.InitOrientation == .landscapeRight {
+            if self.PreOrientation == .landscapeLeft || self.PreOrientation == .landscapeRight {
+                return rv!.center
             }else {
-                if rv.bounds.width > rv.bounds.height {
-                    return CGPoint(x: rv.bounds.height/2, y: rv.bounds.width/2)
+                if rvWidth! > rvHeight! {
+                    return CGPoint(x: rv!.bounds.height/2, y: rv!.bounds.width/2)
                 }
             }
         }
-        return rv.center
+        return rv!.center
 
     }
     // 5️⃣Init Screen's Condition
-    @objc private func dismiss() {
-        var timer: dispatch_source_t?
+    @objc fileprivate func dismiss() {
+        var timer: DispatchSource?
         if let _ = timer {
-            dispatch_source_cancel(timer!)
+            timer!.cancel()
             timer = nil
         }
-        windowsTemp.removeAll(keepCapacity: false)
+        windowsTemp.removeAll(keepingCapacity: false)
     }
 }
 
@@ -203,7 +205,7 @@ public class JHB_HUDDiyManager: UIView {
 public extension JHB_HUDDiyManager{
     
     // MARK: - 1⃣️单纯显示DIY进程中(Just Show In DIY-Progress)
-    public func showDIYProgressWithType(img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
+    public func showDIYProgressWithType(_ img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
         self.coreView.diyShowImage = img
         self.coreView.diySpeed = diySpeed
         self.coreView.diyHudType = diyHudType.hashValue
@@ -211,7 +213,7 @@ public extension JHB_HUDDiyManager{
         self.showDIYProgressWithHUDType(HudType)
     }
     // MARK: - 2⃣️单纯显示DIY进程中(Just Show In DIY-Progress:❤️播放图片数组)
-    public func showDIYProgressAnimated(imgsName:NSString,imgsNumber:NSInteger,diySpeed:NSTimeInterval, HudType:HUDType){
+    public func showDIYProgressAnimated(_ imgsName:NSString,imgsNumber:NSInteger,diySpeed:TimeInterval, HudType:HUDType){
         self.coreView.diyShowImage = imgsName
         self.coreView.diyImgsNumber = imgsNumber
         self.coreView.diySpeed = diySpeed
@@ -219,7 +221,7 @@ public extension JHB_HUDDiyManager{
         self.showDIYProgressWithHUDType(HudType)
     }
     
-    private func showDIYProgressWithHUDType(HudType:HUDType) {
+    fileprivate func showDIYProgressWithHUDType(_ HudType:HUDType) {
         
         switch HudType {
         case .kHUDTypeDefaultly:
@@ -245,7 +247,7 @@ public extension JHB_HUDDiyManager{
     }
     
       // 1⃣️原位置不变化
-    private func EffectShowProgressAboutStablePositon(type:HUDType) {
+    fileprivate func EffectShowProgressAboutStablePositon(_ type:HUDType) {
         
         var kIfNeedEffect : Bool = false
         switch type {
@@ -261,24 +263,24 @@ public extension JHB_HUDDiyManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.diyMsgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 )
+        self.coreView.diyMsgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 )
         self.ResetWindowPosition()
         
         if kIfNeedEffect == false {
         }else if kIfNeedEffect == true {
             /*实现动画*/
-            UIView.animateWithDuration(0.65) {
+            UIView.animate(withDuration: 0.65, animations: {
                 self.coreView.alpha = 1
-                self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-            }
+                self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+            }) 
         }
     }
     // 2⃣️上下相关
-    private  func EffectShowProgressAboutTopAndBottom(type:HUDType) {
+    fileprivate  func EffectShowProgressAboutTopAndBottom(_ type:HUDType) {
         var value : CGFloat = 0
         switch type {
         case .kHUDTypeShowFromBottomToTop:
@@ -291,23 +293,23 @@ public extension JHB_HUDDiyManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.diyMsgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - value)
+        self.coreView.diyMsgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 - value)
         self.ResetWindowPosition()
         
         /*实现动画*/
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-        }
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+        }) 
         
     }
     
     // 3⃣️左右相关
-    private  func EffectShowProgressAboutLeftAndRight(type:HUDType){
+    fileprivate  func EffectShowProgressAboutLeftAndRight(_ type:HUDType){
         var value : CGFloat = 0
         switch type {
         case .kHUDTypeShowFromLeftToRight:
@@ -320,23 +322,23 @@ public extension JHB_HUDDiyManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.diyMsgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2)
+        self.coreView.diyMsgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2 + value, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
         /*实现动画*/
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-        }
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+        }) 
         
     }
     
     // 4⃣️内外相关
-    private  func EffectShowProgressAboutInsideAndOutside(type:HUDType){
+    fileprivate  func EffectShowProgressAboutInsideAndOutside(_ type:HUDType){
         
         var kInitValue : CGFloat = 0
         var kScaleValue : CGFloat = 0
@@ -353,23 +355,23 @@ public extension JHB_HUDDiyManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveNoMsgWithScale", object: kScaleValue)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveNoMsgWithScale"), object: kScaleValue)
         /*重写位置*/
-        self.coreView.diyMsgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - kInitValue) / 2, (SCREEN_HEIGHT - kInitValue) / 2, kInitValue, kInitValue)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.diyMsgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - kInitValue) / 2, y: (SCREEN_HEIGHT - kInitValue) / 2, width: kInitValue, height: kInitValue)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
 
         self.ResetWindowPosition()
         /*实现动画*/
-        UIView.animateWithDuration(0.65){
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, kScaleValue,kScaleValue)
-        }
+            self.coreView.transform = self.coreView.transform.scaledBy(x: kScaleValue,y: kScaleValue)
+        })
         
     }
    
     // MARK: - 3⃣️显示DIY进程及文字(Show DIY-InProgress-Status And The Words-Message)
-    public func showDIYProgressMsgsWithType(msgs:NSString,img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {// NEW
+    public func showDIYProgressMsgsWithType(_ msgs:NSString,img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {// NEW
         self.coreView.diySpeed = diySpeed
         self.coreView.diyHudType = diyHudType.hashValue
         self.coreView.diyShowImage = img
@@ -377,7 +379,7 @@ public extension JHB_HUDDiyManager{
         self.showDIYProgressMsgsWithHUDType(msgs, HudType: HudType)
     }
     // MARK: - 4⃣️显示DIY进程及文字(Show DIY-InProgress-Status And The Words-Message❤️播放图片数组)
-    public func showDIYProgressMsgsAnimated(msgs:NSString,imgsName:NSString,imgsNumber:NSInteger,diySpeed:NSTimeInterval, HudType:HUDType) {// NEW
+    public func showDIYProgressMsgsAnimated(_ msgs:NSString,imgsName:NSString,imgsNumber:NSInteger,diySpeed:TimeInterval, HudType:HUDType) {// NEW
         self.coreView.diyShowImage = imgsName
         self.coreView.diyImgsNumber = imgsNumber
         self.coreView.diySpeed = diySpeed
@@ -385,7 +387,7 @@ public extension JHB_HUDDiyManager{
         self.showDIYProgressMsgsWithHUDType(msgs, HudType: HudType)
     }
     
-    private func showDIYProgressMsgsWithHUDType(msgs:NSString,HudType:HUDType) {
+    fileprivate func showDIYProgressMsgsWithHUDType(_ msgs:NSString,HudType:HUDType) {
         switch HudType {
         case .kHUDTypeDefaultly:
             self.EffectShowProgressMsgsAboutTopAndBottom(msgs,type: .kHUDTypeShowFromBottomToTop)
@@ -409,7 +411,7 @@ public extension JHB_HUDDiyManager{
     }
     
     // 1⃣️原位置不变
-    private  func EffectShowProgressMsgsAboutStablePosition(msgs:NSString,type:HUDType) {
+    fileprivate  func EffectShowProgressMsgsAboutStablePosition(_ msgs:NSString,type:HUDType) {
         
         switch type {
         case .kHUDTypeShowImmediately:
@@ -424,8 +426,8 @@ public extension JHB_HUDDiyManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.diyMsgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.diyMsgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -433,22 +435,22 @@ public extension JHB_HUDDiyManager{
         }else if msgLabelWidth + 2*kMargin <= 80 {
             msgLabelWidth = 80
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 105)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 105)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
         
         self.coreView.diyMsgLabelWidth = msgLabelWidth
         self.coreView.diyMsgLabel.text = msgs as String
     }
     // 2⃣️上下相关
-    private  func EffectShowProgressMsgsAboutTopAndBottom(msgs:NSString,type:HUDType){
+    fileprivate  func EffectShowProgressMsgsAboutTopAndBottom(_ msgs:NSString,type:HUDType){
         
         var value : CGFloat = 0
         switch type {
@@ -463,8 +465,8 @@ public extension JHB_HUDDiyManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.diyMsgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.diyMsgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -475,19 +477,19 @@ public extension JHB_HUDDiyManager{
         self.coreView.diyMsgLabelWidth = msgLabelWidth + 20
         self.coreView.diyMsgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 105)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + value)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 105)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + value)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
     }
     // 3⃣️左右相关
-    private  func EffectShowProgressMsgsAboutLeftAndRight(msgs:NSString,type:HUDType){
+    fileprivate  func EffectShowProgressMsgsAboutLeftAndRight(_ msgs:NSString,type:HUDType){
         
         var value : CGFloat = 0
         switch type {
@@ -502,8 +504,8 @@ public extension JHB_HUDDiyManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.diyMsgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.diyMsgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -514,23 +516,23 @@ public extension JHB_HUDDiyManager{
         self.coreView.diyMsgLabelWidth = msgLabelWidth + 20
         self.coreView.diyMsgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 105)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 105)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2 + value, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
     }
     
     // 4⃣️内外相关
-    private  func EffectShowProgressMsgsAboutInsideAndOutside(msgs:NSString,type:HUDType){
+    fileprivate  func EffectShowProgressMsgsAboutInsideAndOutside(_ msgs:NSString,type:HUDType){
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.diyMsgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.diyMsgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -561,32 +563,32 @@ public extension JHB_HUDDiyManager{
         self.coreView.diyMsgLabelWidth = iniWidthValue
         self.coreView.diyMsgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_DIYHUD_haveMsg_WithScale", object: kScaleValue)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_DIYHUD_haveMsg_WithScale"), object: kScaleValue)
         
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - iniHeightValue) / 2,iniWidthValue , iniHeightValue)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - iniHeightValue) / 2,width: iniWidthValue , height: iniHeightValue)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, kScaleValue,kScaleValue)
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.transform = self.coreView.transform.scaledBy(x: kScaleValue,y: kScaleValue)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
         
     }
     
     
     // MARK: - 隐藏(Hidden❤️Type:dissolveToTop)
     public func hideProgress() {// DEFAULT
-        self.performSelector(#selector(JHB_HUDDiyManager.hideWithAnimation), withObject: self, afterDelay: 0.6)
+        self.perform(#selector(JHB_HUDDiyManager.hideWithAnimation), with: self, afterDelay: 0.6)
     }
-    private func hideHud() {
+    fileprivate func hideHud() {
         self.hideProgress()
     }
 
     // MARK: - Self-Method Without Ask
-    @objc private func hideWithAnimation() {
+    @objc fileprivate func hideWithAnimation() {
         
         switch self.type {
         case HUDType.kHUDTypeDefaultly.hashValue:
@@ -624,7 +626,7 @@ public extension JHB_HUDDiyManager{
         
     }
     // 1⃣️原位置不变
-    func EffectRemoveAboutStablePositon(HudType:HUDType) {
+    func EffectRemoveAboutStablePositon(_ HudType:HUDType) {
         
         var  kIfNeedEffect : Bool = false
         switch HudType {
@@ -642,16 +644,16 @@ public extension JHB_HUDDiyManager{
         if kIfNeedEffect == false {
             self.SuperInitStatus()
         }else if kIfNeedEffect == true {
-            UIView.animateWithDuration(0.65, animations: {
+            UIView.animate(withDuration: 0.65, animations: {
                 self.coreView.alpha = 0
-                self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2, self.bgClearView.bounds.size.height / 2)
-            }) { (true) in
+                self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2, y: self.bgClearView.bounds.size.height / 2)
+            }, completion: { (true) in
                 self.SuperInitStatus()
-            }
+            }) 
         }
     }
     // 2⃣️上下相关
-    func EffectRemoveAboutBottomAndTop(HudType:HUDType) {
+    func EffectRemoveAboutBottomAndTop(_ HudType:HUDType) {
         
         var value : CGFloat = 0
         switch HudType {
@@ -666,16 +668,16 @@ public extension JHB_HUDDiyManager{
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2, self.bgClearView.bounds.size.height / 2 + value)
-        }) { (true) in
+            self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2, y: self.bgClearView.bounds.size.height / 2 + value)
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // 3⃣️左右相关
-    func EffectRemoveAboutLeftAndRight(HudType:HUDType) {
+    func EffectRemoveAboutLeftAndRight(_ HudType:HUDType) {
         var value : CGFloat = 0
         
         switch HudType {
@@ -690,16 +692,16 @@ public extension JHB_HUDDiyManager{
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2 + value, self.bgClearView.bounds.size.height / 2)
-        }) { (true) in
+            self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2 + value, y: self.bgClearView.bounds.size.height / 2)
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // 4⃣️内外相关
-    func EffectRemoveAboutInsideAndOutside(HudType:HUDType) {
+    func EffectRemoveAboutInsideAndOutside(_ HudType:HUDType) {
         
         var kScaleValue : CGFloat = 0
         switch HudType {
@@ -714,13 +716,13 @@ public extension JHB_HUDDiyManager{
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, 1/kScaleValue,1/kScaleValue)
-            self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2, self.bgClearView.bounds.size.height / 2)
-        }) { (true) in
+            self.coreView.transform = self.coreView.transform.scaledBy(x: 1/kScaleValue,y: 1/kScaleValue)
+            self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2, y: self.bgClearView.bounds.size.height / 2)
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // MARK: - 新增适应屏幕旋转相关
@@ -729,18 +731,18 @@ public extension JHB_HUDDiyManager{
     func SuperInitStatus() {
         self.RemoveNotification()
         self.dismiss()
-        InitOrientation = UIDevice.currentDevice().orientation
-    NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUDTopVcCanRotated", object: nil, userInfo: nil)
+        InitOrientation = UIDevice.current.orientation
+    NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUDTopVcCanRotated"), object: nil, userInfo: nil)
         self.removeFromSuperview()
     }
     /*************➕保持适应屏幕旋转前提下实现添加➕************/
     func ResetWindowPosition() {
         let window = UIWindow()
-        window.backgroundColor = UIColor.clearColor()
-        window.frame = CGRectMake(0, 0, (UIApplication.sharedApplication().keyWindow?.bounds.size.width)!,(UIApplication.sharedApplication().keyWindow?.bounds.size.height)!)
+        window.backgroundColor = UIColor.clear
+        window.frame = CGRect(x: 0, y: 0, width: (UIApplication.shared.keyWindow?.bounds.size.width)!,height: (UIApplication.shared.keyWindow?.bounds.size.height)!)
         window.windowLevel = UIWindowLevelAlert
         window.center = self.getCenter()
-        window.hidden = false
+        window.isHidden = false
         window.addSubview(self)
         windowsTemp.append(window)
     }

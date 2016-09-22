@@ -13,18 +13,18 @@ class ExampleNaviController: UINavigationController ,UIGestureRecognizerDelegate
         override func viewDidLoad() {
             super.viewDidLoad()
             // ❤️通过这一步,可以实现被删除掉的侧滑功能!!!!❤️
-            if self.respondsToSelector(Selector.init("interactivePopGestureRecognizer")) {
+            if self.responds(to: #selector(getter: UINavigationController.interactivePopGestureRecognizer)) {
                 self.interactivePopGestureRecognizer!.delegate = self
             }
         }
         // ❤️1⃣️在重写pushViewController方法中来设置NavigationController下的根控制器的返回按钮
-        override func pushViewController(viewController: UIViewController, animated: Bool) {
+        override func pushViewController(_ viewController: UIViewController, animated: Bool) {
             super.pushViewController(viewController, animated: true)
             // ❤️重写返回按钮
-            if viewController.isKindOfClass(ExampleMainController) {
+            if viewController.isKind(of: ExampleMainController.self) {
                 
             }else {
-                let newBackButton = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ExampleNaviController.back(_:)))
+                let newBackButton = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ExampleNaviController.back(_:)))
                 viewController.navigationItem.leftBarButtonItem = newBackButton;
             }
         }
@@ -38,11 +38,11 @@ class ExampleNaviController: UINavigationController ,UIGestureRecognizerDelegate
          self.navigationItem.leftBarButtonItem = newBackButton;
          */
         
-        func back(sender: UIBarButtonItem) {
+        func back(_ sender: UIBarButtonItem) {
             // Perform your custom actions
             // ...
             // Go back to the previous ViewController
-            self.popViewControllerAnimated(true)
+            self.popViewController(animated: true)
         }
         override func didReceiveMemoryWarning() {
             super.didReceiveMemoryWarning()

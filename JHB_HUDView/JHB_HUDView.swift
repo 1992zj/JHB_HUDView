@@ -47,59 +47,59 @@ public enum DiyHUDType {
 
 var hud = JHB_HUDManager()
 var diyHud = JHB_HUDDiyManager()
-public class JHB_HUDView:NSObject{
+open class JHB_HUDView:NSObject{
     
     /*************✅显示进程************/
-    public class func showProgress(){
+    open class func showProgress(){
         let HUD = JHB_HUDManager.init()
         hud = HUD
         HUD.showProgress()
     }
     
     /***********✅显示进程+HUDType**********/
-    public class func showProgressWithType(HudType:HUDType){
+    open class func showProgressWithType(_ HudType:HUDType){
         let HUD = JHB_HUDManager.init()
         hud = HUD
         HUD.showProgressWithType(HudType)
     }
     
     /**********✅显示进程及信息************/
-    public class func showProgressMsg(msg:NSString) {
+    open class func showProgressMsg(_ msg:NSString) {
         let msgHUD = JHB_HUDManager.init()
         hud = msgHUD
         msgHUD.showProgressMsgs(msg)
     }
     
     /*********✅显示进程及信息+HUDType*********/
-    public class func showProgressMsgWithType(msg:NSString,HudType:HUDType){
+    open class func showProgressMsgWithType(_ msg:NSString,HudType:HUDType){
         let HUD = JHB_HUDManager.init()
         hud = HUD
         HUD.showProgressMsgsWithType(msg, HudType: HudType)
     }
     
     /***********✅显示单行信息(自行执行Hide)**********/
-    public class func showMsg(msg:NSString) {
+    open class func showMsg(_ msg:NSString) {
         let msgHUD = JHB_HUDManager.init()
         hud = msgHUD
         msgHUD.show(msg)
     }
     
     /********✅显示单行信息(自行执行Hide)+HUDType**********/
-    public class func showMsgWithType(msg:NSString,HudType:HUDType) {
+    open class func showMsgWithType(_ msg:NSString,HudType:HUDType) {
         let msgHUD = JHB_HUDManager.init()
         hud = msgHUD
         msgHUD.showWithType(msg, HudType: HudType)
     }
     
     /************✅显示多行信息(自行执行Hide)************/
-    public class func showMsgMultiLine(msg:NSString, coreInSet: CGFloat, labelInSet: CGFloat, delay: Double) {
+    open class func showMsgMultiLine(_ msg:NSString, coreInSet: CGFloat, labelInSet: CGFloat, delay: Double) {
         let msgHUD = JHB_HUDManager.init()
         hud = msgHUD
         msgHUD.showMultiLine(msg, coreInSet: coreInSet, labelInSet: labelInSet, delay: delay)
     }
     
     /*********✅显示多行信息(自行执行Hide)+HUDType***********/
-    public class func showMsgMultiLineWithType(msg:NSString, coreInSet: CGFloat, labelInSet: CGFloat, delay: Double ,HudType:HUDType) {
+    open class func showMsgMultiLineWithType(_ msg:NSString, coreInSet: CGFloat, labelInSet: CGFloat, delay: Double ,HudType:HUDType) {
         let msgHUD = JHB_HUDManager.init()
         hud = msgHUD
         msgHUD.showMultiLineWithType(msg, coreInSet: coreInSet, labelInSet: labelInSet, delay: delay, HudType: HudType)
@@ -109,7 +109,7 @@ public class JHB_HUDView:NSObject{
     /*
      In current method lists ,there are two methods can hide your HUD, but it is different from each other , this one can only be used when you created HUD without diy-image
      */
-    public class func hideProgress() {
+    open class func hideProgress() {
         hud.hideProgress()
     }
     
@@ -127,7 +127,7 @@ public class JHB_HUDView:NSObject{
         -- diySpeed:if you set animation for your diy-image ,this param will limit your animation-speed .
         -- diyHudType:it comes from the enum 'DiyHUDType',it improve four types of diy-image's animation that you can choose .
      */
-    public class func showProgressOfDIYTypeWith(img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
+    open class func showProgressOfDIYTypeWith(_ img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
         let msgDIYHUD = JHB_HUDDiyManager.init()
         diyHud = msgDIYHUD
         msgDIYHUD.showDIYProgressWithType(img,diySpeed:diySpeed, diyHudType: diyHudType, HudType: HudType)
@@ -140,7 +140,7 @@ public class JHB_HUDView:NSObject{
      -- imgsNumber:this param will let it knows that how many images will be showed ,it can not be null .
      -- diySpeed:this param will limit your animation-speed.
      */
-    public class func showProgressOfDIYTypeWithAnimation(imgsName:NSString,imgsNumber:NSInteger,diySpeed:NSTimeInterval, HudType:HUDType){
+    open class func showProgressOfDIYTypeWithAnimation(_ imgsName:NSString,imgsNumber:NSInteger,diySpeed:TimeInterval, HudType:HUDType){
         let msgDIYHUD = JHB_HUDDiyManager.init()
         diyHud = msgDIYHUD
         msgDIYHUD.showDIYProgressAnimated(imgsName,imgsNumber:imgsNumber,diySpeed:diySpeed, HudType:HudType)
@@ -153,7 +153,7 @@ public class JHB_HUDView:NSObject{
      -- diySpeed:if you set animation for your diy-image ,this param will limit your animation-speed .
      -- diyHudType:it comes from the enum 'DiyHUDType',it improve four types of diy-image's animation that you can choose .
      */
-    public class func showProgressMsgOfDIYTypeWith(msg:NSString,img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
+    open class func showProgressMsgOfDIYTypeWith(_ msg:NSString,img:NSString,diySpeed:CFTimeInterval,diyHudType:DiyHUDType, HudType:HUDType) {
         let msgDIYHUD = JHB_HUDDiyManager.init()
         diyHud = msgDIYHUD
         msgDIYHUD.showDIYProgressMsgsWithType(msg,img:img,diySpeed:diySpeed,diyHudType:diyHudType, HudType: HudType)
@@ -166,17 +166,17 @@ public class JHB_HUDView:NSObject{
      -- imgsNumber:this param will let it knows that how many images will be showed ,it can not be null .
      -- diySpeed:if you set animation for your diy-image ,this param will limit your animation-speed .
      */
-    public class func showProgressMsgOfDIYTypeWithAnimation(msg:NSString,imgsName:NSString,imgsNumber:NSInteger, diySpeed:CFTimeInterval, HudType:HUDType) {
+    open class func showProgressMsgOfDIYTypeWithAnimation(_ msg:NSString,imgsName:NSString,imgsNumber:NSInteger, diySpeed:CFTimeInterval, HudType:HUDType) {
         let msgDIYHUD = JHB_HUDDiyManager.init()
         diyHud = msgDIYHUD
-        msgDIYHUD.showDIYProgressMsgsAnimated(msg,imgsName:imgsName,imgsNumber:imgsNumber,diySpeed:diySpeed, HudType:HudType)
+        msgDIYHUD.showDIYProgressMsgsAnimated(msg as NSString,imgsName:imgsName,imgsNumber:imgsNumber,diySpeed:diySpeed, HudType:HudType)
     }
     
     /*********✅自定义类型HIDE隐藏并移除+HUDType**********/
     /*
      In current method lists ,there are two methods can hide your HUD, but it is different from each other , this one can only be used when you created diy-image-type HUD
      */
-    public class func hideProgressOfDIYType() {
+    open class func hideProgressOfDIYType() {
         diyHud.hideProgress()
     }
 

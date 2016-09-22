@@ -6,12 +6,12 @@
 
 import UIKit
 
-public class JHB_HUDManager: UIView {
+open class JHB_HUDManager: UIView {
     // MARK: parameters
-    private  var windowsTemp: [UIWindow] = []
-    private  var timer: dispatch_source_t?
-    let SCREEN_WIDTH  = UIScreen.mainScreen().bounds.size.width
-    let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
+    fileprivate  var windowsTemp: [UIWindow] = []
+    fileprivate  var timer: DispatchSource?
+    let SCREEN_WIDTH  = UIScreen.main.bounds.size.width
+    let SCREEN_HEIGHT = UIScreen.main.bounds.size.height
     /*透明背景*//*Clear Background*/
     var bgClearView   = UIView()
     /*核心视图*//*Core View Part*/
@@ -23,13 +23,13 @@ public class JHB_HUDManager: UIView {
     /*定义当前类型*//*Define Current Type*/
     var type : NSInteger = 0
     /*之前的屏幕旋转类型*//*The Screen Rotation Type Of Previous*/
-    var PreOrientation = UIDevice.currentDevice().orientation
+    var PreOrientation = UIDevice.current.orientation
     /*初始化时的屏幕旋转类型*//*The Screen Rotation Type Of Initial-time*/
-    var InitOrientation = UIDevice.currentDevice().orientation
+    var InitOrientation = UIDevice.current.orientation
     
     // MARK: - Interface
     override init(frame: CGRect) {
-        super.init(frame: UIScreen.mainScreen().bounds)
+        super.init(frame: UIScreen.main.bounds)
         self.setUp()
     }
     
@@ -44,36 +44,36 @@ public class JHB_HUDManager: UIView {
         self.addSubview(self.coreView)
         self.registerDeviceOrientationNotification()
         
-        PreOrientation = UIDevice.currentDevice().orientation
-        InitOrientation = UIDevice.currentDevice().orientation
+        PreOrientation = UIDevice.current.orientation
+        InitOrientation = UIDevice.current.orientation
         
-        if PreOrientation != .Portrait {
-            NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUDTopVcCannotRotated", object: self.PreOrientation.hashValue, userInfo: nil)
+        if PreOrientation != .portrait {
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUDTopVcCannotRotated"), object: self.PreOrientation.hashValue, userInfo: nil)
         }
 
     }
     
     func setSubViews() {
         self.bgClearView = UIView.init()
-        self.bgClearView.backgroundColor = UIColor.clearColor()
+        self.bgClearView.backgroundColor = UIColor.clear
         
         self.coreView = JHB_HUDProgressView.init()
         self.coreView.sizeToFit()
         self.coreView.layer.cornerRadius = 10
         self.coreView.layer.masksToBounds = true
-        self.coreView.backgroundColor = UIColor.blackColor()
+        self.coreView.backgroundColor = UIColor.black
         self.coreView.alpha = 0
         
         self.resetSubViews()
     }
     
     func resetSubViews() {
-        self.bgClearView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 70) / 2, (SCREEN_HEIGHT - 70) / 2, 70, 70)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
+        self.bgClearView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: SCREEN_HEIGHT)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 70) / 2, y: (SCREEN_HEIGHT - 70) / 2, width: 70, height: 70)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + 60)
     }
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         
     }
@@ -81,17 +81,17 @@ public class JHB_HUDManager: UIView {
 
     // MARK: - ShowAndHideWithAnimation
     // 只显示信息内容时的CoreView的行为效果(The Behavior Effect Of 'CoreView' When Just Show Message-Content)
-    @objc private func coreViewShowAndHideWithAnimation(delay:Double){
-        UIView.animateWithDuration(0.65, animations: {
+    @objc fileprivate func coreViewShowAndHideWithAnimation(_ delay:Double){
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }) { (true) in
-            self.performSelector(#selector(JHB_HUDManager.selfCoreViewRemoveFromSuperview), withObject: self, afterDelay: delay)
-        }
+        }, completion: { (true) in
+            self.perform(#selector(JHB_HUDManager.selfCoreViewRemoveFromSuperview), with: self, afterDelay: delay)
+        }) 
     }
     
-    @objc private func selfCoreViewRemoveFromSuperview(){
+    @objc fileprivate func selfCoreViewRemoveFromSuperview(){
         
         switch self.type {
         case HUDType.kHUDTypeDefaultly.hashValue:
@@ -128,7 +128,7 @@ public class JHB_HUDManager: UIView {
     }
     
     // 1⃣️原位置不变
-    func EffectSelfCoreViewRemoveAboutStablePosition(HudType:HUDType){
+    func EffectSelfCoreViewRemoveAboutStablePosition(_ HudType:HUDType){
         
         var al : CGFloat = 1
         switch HudType {
@@ -143,15 +143,15 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = al
-        }) { (true) in
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // 2⃣️上下相关
-    func EffectSelfCoreViewRemoveAboutTopAndBottom(HudType:HUDType) {
+    func EffectSelfCoreViewRemoveAboutTopAndBottom(_ HudType:HUDType) {
         
         var value : CGFloat = 0
         switch HudType {
@@ -166,18 +166,18 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2 + value)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2 + value)
             self.setNeedsDisplay()
-        }) { (true) in
+        }, completion: { (true) in
              self.SuperInitStatus()
-        }
+        }) 
         
     }
     
     // 3⃣️左右相关
-    func EffectSelfCoreViewRemoveAboutLeftAndRight(HudType:HUDType) {
+    func EffectSelfCoreViewRemoveAboutLeftAndRight(_ HudType:HUDType) {
         
         var value : CGFloat = 0
         switch HudType {
@@ -192,18 +192,18 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2 + value, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2 + value, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }) { (true) in
+        }, completion: { (true) in
              self.SuperInitStatus()
-        }
+        }) 
         
     }
     
     // 4⃣️内外相关
-    func EffectSelfCoreViewRemoveAboutInsideAndOutSide(HudType:HUDType) {
+    func EffectSelfCoreViewRemoveAboutInsideAndOutSide(_ HudType:HUDType) {
         
         var kScaleValue : CGFloat = 0
         switch HudType {
@@ -218,19 +218,19 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, 1/kScaleValue, 1/kScaleValue)
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2 , UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.transform = self.coreView.transform.scaledBy(x: 1/kScaleValue, y: 1/kScaleValue)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2 , y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }) { (true) in
+        }, completion: { (true) in
              self.SuperInitStatus()
-        }
+        }) 
         
     }
     
     // MARK: - Self-Method Without Ask
-    @objc private func hideWithAnimation() {
+    @objc fileprivate func hideWithAnimation() {
         
         switch self.type {
         case HUDType.kHUDTypeDefaultly.hashValue:
@@ -267,7 +267,7 @@ public class JHB_HUDManager: UIView {
         
     }
     // 1⃣️原位置不变
-    func EffectRemoveAboutStablePositon(HudType:HUDType) {
+    func EffectRemoveAboutStablePositon(_ HudType:HUDType) {
         
         var  kIfNeedEffect : Bool = false
         switch HudType {
@@ -285,16 +285,16 @@ public class JHB_HUDManager: UIView {
         if kIfNeedEffect == false {
             self.SuperInitStatus()
         }else if kIfNeedEffect == true {
-            UIView.animateWithDuration(0.65, animations: {
+            UIView.animate(withDuration: 0.65, animations: {
                 self.coreView.alpha = 0
-                self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2, self.bgClearView.bounds.size.height / 2)
-            }) { (true) in
+                self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2, y: self.bgClearView.bounds.size.height / 2)
+            }, completion: { (true) in
                 self.SuperInitStatus()
-            }
+            }) 
         }
     }
     // 2⃣️上下相关
-    func EffectRemoveAboutBottomAndTop(HudType:HUDType) {
+    func EffectRemoveAboutBottomAndTop(_ HudType:HUDType) {
         
         var value : CGFloat = 0
         switch HudType {
@@ -309,16 +309,16 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2, self.bgClearView.bounds.size.height / 2 + value)
-        }) { (true) in
+            self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2, y: self.bgClearView.bounds.size.height / 2 + value)
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // 3⃣️左右相关
-    func EffectRemoveAboutLeftAndRight(HudType:HUDType) {
+    func EffectRemoveAboutLeftAndRight(_ HudType:HUDType) {
         var value : CGFloat = 0
         
         switch HudType {
@@ -333,16 +333,16 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2 + value, self.bgClearView.bounds.size.height / 2)
-        }) { (true) in
+            self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2 + value, y: self.bgClearView.bounds.size.height / 2)
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // 4⃣️内外相关
-    func EffectRemoveAboutInsideAndOutside(HudType:HUDType) {
+    func EffectRemoveAboutInsideAndOutside(_ HudType:HUDType) {
         
         var kScaleValue : CGFloat = 0
         switch HudType {
@@ -357,134 +357,136 @@ public class JHB_HUDManager: UIView {
             break
         }
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 0
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, 1/kScaleValue,1/kScaleValue)
-            self.coreView.center = CGPointMake(self.bgClearView.bounds.size.width / 2, self.bgClearView.bounds.size.height / 2)
-        }) { (true) in
+            self.coreView.transform = self.coreView.transform.scaledBy(x: 1/kScaleValue,y: 1/kScaleValue)
+            self.coreView.center = CGPoint(x: self.bgClearView.bounds.size.width / 2, y: self.bgClearView.bounds.size.height / 2)
+        }, completion: { (true) in
             self.SuperInitStatus()
-        }
+        }) 
     }
     
     // MARK: About Screen Rotation
     // 1⃣️Remove Notification
-    private func RemoveNotification() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    fileprivate func RemoveNotification() {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // 2⃣️register Notification
-    private func registerDeviceOrientationNotification() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.transformWindow(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+    fileprivate func registerDeviceOrientationNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.transformWindow(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     // 3️⃣Transform Of Screen
-    @objc private func transformWindow(notification: NSNotification) {
+    @objc fileprivate func transformWindow(_ notification: Notification) {
         var rotation: CGFloat = 0
-        if self.InitOrientation == .Portrait{
-            if self.PreOrientation == .Portrait {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+        if self.InitOrientation == .portrait{
+            if self.PreOrientation == .portrait {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat(M_PI)
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = CGFloat(M_PI/2)
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = CGFloat(M_PI + (M_PI/2))
                 default:
                     break
                 }
-            }else if self.PreOrientation == .PortraitUpsideDown {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+            }else if self.PreOrientation == .portraitUpsideDown {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat((M_PI/2))
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = CGFloat((M_PI/2))
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = CGFloat(M_PI + M_PI/2)
                 default:
                     break
                 }
-            }else if self.PreOrientation == .LandscapeLeft {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+            }else if self.PreOrientation == .landscapeLeft {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat(M_PI)
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = 0
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = CGFloat(M_PI + M_PI/2)
                 default:
                     break
                 }
-            }else if self.PreOrientation == .LandscapeRight {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
+            }else if self.PreOrientation == .landscapeRight {
+                switch UIDevice.current.orientation {
+                case .portrait:
                     rotation = 0
-                case .PortraitUpsideDown:
+                case .portraitUpsideDown:
                     rotation = CGFloat(M_PI)
-                case .LandscapeLeft:
+                case .landscapeLeft:
                     rotation = CGFloat(M_PI/2)
-                case .LandscapeRight:
+                case .landscapeRight:
                     rotation = 0
                 default:
                     break
                 }
-            }else if self.PreOrientation == .FaceDown ||  self.PreOrientation == .FaceDown {
+            }else if self.PreOrientation == .faceDown ||  self.PreOrientation == .faceDown {
                 return
             }
-        }else if self.InitOrientation == .LandscapeLeft || self.InitOrientation == .LandscapeRight ||  self.InitOrientation == .PortraitUpsideDown{
+        }else if self.InitOrientation == .landscapeLeft || self.InitOrientation == .landscapeRight ||  self.InitOrientation == .portraitUpsideDown{
             return
         }
         
-        self.PreOrientation = UIDevice.currentDevice().orientation
+        self.PreOrientation = UIDevice.current.orientation
         windowsTemp.forEach {_ in
             window!.center = self.getCenter()
-            window!.transform = CGAffineTransformMakeRotation(rotation)
+            window!.transform = CGAffineTransform(rotationAngle: rotation)
         }
     }
     
     // 4️⃣Get Center Of Screen
-    private  func getCenter() -> CGPoint {
-        let rv = UIApplication.sharedApplication().keyWindow?.subviews.first as UIView!
-        if self.InitOrientation == .Portrait{
-            if self.PreOrientation == .Portrait {
-                return rv.center
+    fileprivate  func getCenter() -> CGPoint {
+        let rv = UIApplication.shared.keyWindow?.subviews.first as UIView!
+        let rvWidth = rv?.bounds.width.hashValue
+        let rvHeight = rv?.bounds.height.hashValue
+        if self.InitOrientation == .portrait{
+            if self.PreOrientation == .portrait {
+                return rv!.center
             }else {
-                if rv.bounds.width > rv.bounds.height {
-                    return CGPoint(x: rv.bounds.height/2, y: rv.bounds.width/2)
+                if rvWidth! > rvHeight! {
+                    return CGPoint(x: rv!.bounds.height/2, y: rv!.bounds.width/2)
                 }
             }
-        }else if self.InitOrientation == .LandscapeLeft {
-            if self.PreOrientation == .LandscapeLeft || self.PreOrientation == .LandscapeRight {
-                return rv.center
+        }else if self.InitOrientation == .landscapeLeft {
+            if self.PreOrientation == .landscapeLeft || self.PreOrientation == .landscapeRight {
+                return rv!.center
             }else {
-                if rv.bounds.width > rv.bounds.height {
-                    return CGPoint(x: rv.bounds.height/2, y: rv.bounds.width/2)
+                if rvWidth! > rvHeight! {
+                    return CGPoint(x: rv!.bounds.height/2, y: rv!.bounds.width/2)
                 }
             }
-        }else if self.InitOrientation == .LandscapeRight {
-            if self.PreOrientation == .LandscapeLeft || self.PreOrientation == .LandscapeRight {
-                return rv.center
+        }else if self.InitOrientation == .landscapeRight {
+            if self.PreOrientation == .landscapeLeft || self.PreOrientation == .landscapeRight {
+                return rv!.center
             }else {
-                if rv.bounds.width > rv.bounds.height {
-                    return CGPoint(x: rv.bounds.height/2, y: rv.bounds.width/2)
+                if rvWidth! > rvHeight! {
+                    return CGPoint(x: rv!.bounds.height/2, y: rv!.bounds.width/2)
                 }
             }
         }
-        return rv.center
+        return rv!.center
         
     }
     // 5️⃣Init Screen's Condition
-    @objc private func dismiss() {
-        var timer: dispatch_source_t?
+    @objc fileprivate func dismiss() {
+        var timer: DispatchSource?
         if let _ = timer {
-            dispatch_source_cancel(timer!)
+            timer!.cancel()
             timer = nil
         }
-        windowsTemp.removeAll(keepCapacity: false)
+        windowsTemp.removeAll(keepingCapacity: false)
     }
 
     
@@ -494,21 +496,21 @@ public extension JHB_HUDManager{
     
     // MARK: - 1⃣️单纯显示进程中(Just Show In Progress❤️Default Type:FromBottomType)
     public func showProgress() {// DEFAULT
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.msgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
+        self.coreView.msgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + 60)
         self.ResetWindowPosition()
         
         /*实现动画*/
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-        }
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+        }) 
     }
     
-    public func showProgressWithType(HudType:HUDType) {// NEW
+    public func showProgressWithType(_ HudType:HUDType) {// NEW
         self.type = HudType.hashValue
         
         switch HudType {
@@ -533,7 +535,7 @@ public extension JHB_HUDManager{
         }
     }
     // 1⃣️原位置不变化
-    private  func EffectShowProgressAboutStablePositon(type:HUDType) {
+    fileprivate  func EffectShowProgressAboutStablePositon(_ type:HUDType) {
         
         var kIfNeedEffect : Bool = false
         switch type {
@@ -549,24 +551,24 @@ public extension JHB_HUDManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.msgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 )
+        self.coreView.msgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 )
         self.ResetWindowPosition()
         
         if kIfNeedEffect == false {
         }else if kIfNeedEffect == true {
             /*实现动画*/
-            UIView.animateWithDuration(0.65) {
+            UIView.animate(withDuration: 0.65, animations: {
                 self.coreView.alpha = 1
-                self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-            }
+                self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+            }) 
         }
     }
     // 2⃣️上下相关
-    private  func EffectShowProgressAboutTopAndBottom(type:HUDType) {
+    fileprivate  func EffectShowProgressAboutTopAndBottom(_ type:HUDType) {
         var value : CGFloat = 0
         switch type {
         case .kHUDTypeShowFromBottomToTop:
@@ -579,23 +581,23 @@ public extension JHB_HUDManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.msgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - value)
+        self.coreView.msgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 - value)
         self.ResetWindowPosition()
         
         /*实现动画*/
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-        }
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+        }) 
         
     }
     
     // 3⃣️左右相关
-    private  func EffectShowProgressAboutLeftAndRight(type:HUDType){
+    fileprivate  func EffectShowProgressAboutLeftAndRight(_ type:HUDType){
         var value : CGFloat = 0
         switch type {
         case .kHUDTypeShowFromLeftToRight:
@@ -608,23 +610,23 @@ public extension JHB_HUDManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveNoMsg", object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveNoMsg"), object: nil)
         /*重写位置*/
-        self.coreView.msgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - 80) / 2, (SCREEN_HEIGHT - 80) / 2, 80, 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2)
+        self.coreView.msgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - 80) / 2, y: (SCREEN_HEIGHT - 80) / 2, width: 80, height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2 + value, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
         /*实现动画*/
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
-        }
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
+        }) 
         
     }
     
     // 4⃣️内外相关
-    private  func EffectShowProgressAboutInsideAndOutside(type:HUDType){
+    fileprivate  func EffectShowProgressAboutInsideAndOutside(_ type:HUDType){
         
         var kInitValue : CGFloat = 0
         var kScaleValue : CGFloat = 0
@@ -641,25 +643,25 @@ public extension JHB_HUDManager{
             
             break
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveNoMsgWithScale", object: kScaleValue)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveNoMsgWithScale"), object: kScaleValue)
         /*重写位置*/
-        self.coreView.msgLabel.hidden = true
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - kInitValue) / 2, (SCREEN_HEIGHT - kInitValue) / 2, kInitValue, kInitValue)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.msgLabel.isHidden = true
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - kInitValue) / 2, y: (SCREEN_HEIGHT - kInitValue) / 2, width: kInitValue, height: kInitValue)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
         /*实现动画*/
-        UIView.animateWithDuration(0.65){
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, kScaleValue,kScaleValue)
-        }
+            self.coreView.transform = self.coreView.transform.scaledBy(x: kScaleValue,y: kScaleValue)
+        })
         
     }
     
     // MARK: - 2⃣️显示进程及文字(Show InProgress-Status And The Words Message❤️Default Type:FromBottomType)
-    public func showProgressMsgs(msgs:NSString) {
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+    public func showProgressMsgs(_ msgs:NSString) {
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -671,19 +673,19 @@ public extension JHB_HUDManager{
         self.coreView.msgLabelWidth = msgLabelWidth + 20
         self.coreView.msgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + 60)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
     }
     
-    public func showProgressMsgsWithType(msgs:NSString, HudType:HUDType) {// NEW
+    public func showProgressMsgsWithType(_ msgs:NSString, HudType:HUDType) {// NEW
         self.type = HudType.hashValue
         
         switch HudType {
@@ -709,7 +711,7 @@ public extension JHB_HUDManager{
     }
     
     // 1⃣️原位置不变
-    private  func EffectShowProgressMsgsAboutStablePosition(msgs:NSString,type:HUDType) {
+    fileprivate  func EffectShowProgressMsgsAboutStablePosition(_ msgs:NSString,type:HUDType) {
         
         switch type {
         case .kHUDTypeShowImmediately:
@@ -724,8 +726,8 @@ public extension JHB_HUDManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -733,22 +735,22 @@ public extension JHB_HUDManager{
         }else if msgLabelWidth + 2*kMargin <= 80 {
             msgLabelWidth = 80
         }
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
         
         self.coreView.msgLabelWidth = msgLabelWidth
         self.coreView.msgLabel.text = msgs as String
     }
     // 2⃣️上下相关
-    private  func EffectShowProgressMsgsAboutTopAndBottom(msgs:NSString,type:HUDType){
+    fileprivate  func EffectShowProgressMsgsAboutTopAndBottom(_ msgs:NSString,type:HUDType){
         
         var value : CGFloat = 0
         switch type {
@@ -763,8 +765,8 @@ public extension JHB_HUDManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -775,19 +777,19 @@ public extension JHB_HUDManager{
         self.coreView.msgLabelWidth = msgLabelWidth + 20
         self.coreView.msgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + value)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + value)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
     }
     // 3⃣️左右相关
-    private  func EffectShowProgressMsgsAboutLeftAndRight(msgs:NSString,type:HUDType){
+    fileprivate  func EffectShowProgressMsgsAboutLeftAndRight(_ msgs:NSString,type:HUDType){
         
         var value : CGFloat = 0
         switch type {
@@ -802,8 +804,8 @@ public extension JHB_HUDManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -814,23 +816,23 @@ public extension JHB_HUDManager{
         self.coreView.msgLabelWidth = msgLabelWidth + 20
         self.coreView.msgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveMsg", object: nil)
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 80) / 2,msgLabelWidth + 2*kMargin , 80)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveMsg"), object: nil)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 80) / 2,width: msgLabelWidth + 2*kMargin , height: 80)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2 + value, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
     }
     
     // 4⃣️内外相关
-    private  func EffectShowProgressMsgsAboutInsideAndOutside(msgs:NSString,type:HUDType){
+    fileprivate  func EffectShowProgressMsgsAboutInsideAndOutside(_ msgs:NSString,type:HUDType){
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         if msgLabelWidth + 2*kMargin >= (SCREEN_WIDTH - 30) {
@@ -861,18 +863,18 @@ public extension JHB_HUDManager{
         self.coreView.msgLabelWidth = iniWidthValue
         self.coreView.msgLabel.text = msgs as String
         
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_haveMsg_WithScale", object: kScaleValue)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_haveMsg_WithScale"), object: kScaleValue)
         
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - iniHeightValue) / 2,iniWidthValue , iniHeightValue)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - iniHeightValue) / 2,width: iniWidthValue , height: iniHeightValue)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
-        UIView.animateWithDuration(0.65) {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, kScaleValue,kScaleValue)
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.transform = self.coreView.transform.scaledBy(x: kScaleValue,y: kScaleValue)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }
+        }) 
         
     }
     
@@ -887,11 +889,11 @@ public extension JHB_HUDManager{
      PS : You'd Better Be Sure That  The Addition Of 'coreInSet'*2 And 'labelInSet'*2 Lower Than 'SCREEN_WIDTH - 30' ,Or It Will Reset The Margin Value Be 30 Both CoreView-To-Window And Label-To-Window     
      */
     // ❤️<一>:显示多行(Show Multi Line)
-    public func showMultiLine(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double){
+    public func showMultiLine(_ msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double){
         var KCore = coreInSet
         var KLabel = labelInSet
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         if coreViewRect.width > (SCREEN_WIDTH - coreInSet) {
             var paramSet : CGFloat = 0
@@ -904,25 +906,25 @@ public extension JHB_HUDManager{
                 paramSet = (KCore+KLabel)*2
             }
             
-            coreViewRect = msgs.boundingRectWithSize(CGSizeMake(SCREEN_WIDTH-paramSet, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-                NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+            coreViewRect = msgs.boundingRect(with: CGSize(width: SCREEN_WIDTH-paramSet, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+                NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
                 ], context: nil)
         }
         let msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake(KCore, (SCREEN_HEIGHT - 60) / 2,SCREEN_WIDTH - KCore*2  , msgLabelHeight+20)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
+        self.coreView.frame = CGRect(x: KCore, y: (SCREEN_HEIGHT - 60) / 2,width: SCREEN_WIDTH - KCore*2  , height: msgLabelHeight+20)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + 60)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgMultipleShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(delay)
     }
-    public func showMultiLineWithType(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,HudType:HUDType){
+    public func showMultiLineWithType(_ msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,HudType:HUDType){
         
         self.type = HudType.hashValue
         
@@ -949,7 +951,7 @@ public extension JHB_HUDManager{
         
     }
     // 1⃣️原位置不变
-    private  func EffectShowMultiMsgsAboutStablePosition(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
+    fileprivate  func EffectShowMultiMsgsAboutStablePosition(_ msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
         
         switch type {
         case .kHUDTypeShowImmediately:
@@ -965,8 +967,8 @@ public extension JHB_HUDManager{
         
         var KCore = coreInSet
         var KLabel = labelInSet
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         if coreViewRect.width > (SCREEN_WIDTH - coreInSet) {
             var paramSet : CGFloat = 0
@@ -979,27 +981,27 @@ public extension JHB_HUDManager{
                 paramSet = (KCore+KLabel)*2
             }
             
-            coreViewRect = msgs.boundingRectWithSize(CGSizeMake(SCREEN_WIDTH-paramSet, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-                NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+            coreViewRect = msgs.boundingRect(with: CGSize(width: SCREEN_WIDTH-paramSet, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+                NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
                 ], context: nil)
         }
         let msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake(KCore, (SCREEN_HEIGHT - 60) / 2,SCREEN_WIDTH - KCore*2  , msgLabelHeight+20)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.frame = CGRect(x: KCore, y: (SCREEN_HEIGHT - 60) / 2,width: SCREEN_WIDTH - KCore*2  , height: msgLabelHeight+20)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgMultipleShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(delay)
     }
     
     // 2⃣️上下相关
-    private  func EffectShowMultiMsgsAboutTopAndBottom(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
+    fileprivate  func EffectShowMultiMsgsAboutTopAndBottom(_ msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
         
         var value : CGFloat = 0
         switch type {
@@ -1016,8 +1018,8 @@ public extension JHB_HUDManager{
         
         var KCore = coreInSet
         var KLabel = labelInSet
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         if coreViewRect.width > (SCREEN_WIDTH - coreInSet) {
             var paramSet : CGFloat = 0
@@ -1030,27 +1032,27 @@ public extension JHB_HUDManager{
                 paramSet = (KCore+KLabel)*2
             }
             
-            coreViewRect = msgs.boundingRectWithSize(CGSizeMake(SCREEN_WIDTH-paramSet, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-                NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+            coreViewRect = msgs.boundingRect(with: CGSize(width: SCREEN_WIDTH-paramSet, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+                NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
                 ], context: nil)
         }
         let msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake(KCore, (SCREEN_HEIGHT - 60) / 2,SCREEN_WIDTH - KCore*2  , msgLabelHeight+20)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + value)
+        self.coreView.frame = CGRect(x: KCore, y: (SCREEN_HEIGHT - 60) / 2,width: SCREEN_WIDTH - KCore*2  , height: msgLabelHeight+20)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + value)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgMultipleShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(delay)
     }
     
     // 3⃣️左右相关
-    private  func EffectShowMultiMsgsAboutLeftAndRight(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
+    fileprivate  func EffectShowMultiMsgsAboutLeftAndRight(_ msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
         
         var value : CGFloat = 0
         switch type {
@@ -1067,8 +1069,8 @@ public extension JHB_HUDManager{
         
         var KCore = coreInSet
         var KLabel = labelInSet
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         if coreViewRect.width > (SCREEN_WIDTH - coreInSet) {
             var paramSet : CGFloat = 0
@@ -1081,32 +1083,32 @@ public extension JHB_HUDManager{
                 paramSet = (KCore+KLabel)*2
             }
             
-            coreViewRect = msgs.boundingRectWithSize(CGSizeMake(SCREEN_WIDTH-paramSet, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-                NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+            coreViewRect = msgs.boundingRect(with: CGSize(width: SCREEN_WIDTH-paramSet, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+                NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
                 ], context: nil)
         }
         let msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake(KCore, (SCREEN_HEIGHT - 60) / 2,SCREEN_WIDTH - KCore*2  , msgLabelHeight+40)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2)
+        self.coreView.frame = CGRect(x: KCore, y: (SCREEN_HEIGHT - 60) / 2,width: SCREEN_WIDTH - KCore*2  , height: msgLabelHeight+40)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2 + value, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgMultipleShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(delay)
     }
     
     // 4⃣️内外相关
-    private  func EffectShowMultiMsgsAboutInsideAndOutside(msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
+    fileprivate  func EffectShowMultiMsgsAboutInsideAndOutside(_ msgs:NSString, coreInSet:CGFloat, labelInSet:CGFloat, delay:Double,type:HUDType){
         
         var KCore = coreInSet
         var KLabel = labelInSet
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         if coreViewRect.width > (SCREEN_WIDTH - coreInSet) {
             var paramSet : CGFloat = 0
@@ -1119,8 +1121,8 @@ public extension JHB_HUDManager{
                 paramSet = (KCore+KLabel)*2
             }
             
-            coreViewRect = msgs.boundingRectWithSize(CGSizeMake(SCREEN_WIDTH-paramSet, 1000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-                NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+            coreViewRect = msgs.boundingRect(with: CGSize(width: SCREEN_WIDTH-paramSet, height: 1000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+                NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
                 ], context: nil)
         }
         
@@ -1149,24 +1151,24 @@ public extension JHB_HUDManager{
         
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake(KCore, (SCREEN_HEIGHT - iniWidthValue) / 2,iniWidthValue , iniHeightValue+20)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.frame = CGRect(x: KCore, y: (SCREEN_HEIGHT - iniWidthValue) / 2,width: iniWidthValue , height: iniHeightValue+20)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgMultipleShowWithScale", object: kScaleValue)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgMultipleShowWithScale"), object: kScaleValue)
         
         
-        UIView.animateWithDuration(0.65, animations: {
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, kScaleValue, kScaleValue)
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.transform = self.coreView.transform.scaledBy(x: kScaleValue, y: kScaleValue)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }) { (true) in
-            self.performSelector(#selector(JHB_HUDManager.selfCoreViewRemoveFromSuperview), withObject: self, afterDelay: delay)
-        }
+        }, completion: { (true) in
+            self.perform(#selector(JHB_HUDManager.selfCoreViewRemoveFromSuperview), with: self, afterDelay: delay)
+        }) 
         
     }
     
@@ -1174,9 +1176,9 @@ public extension JHB_HUDManager{
     /*
      There Is Only One Paramter,That Is The Content You Want To Display ,And If You Want To Show A Brief Message Or Just One-Line Message,You All Can Use The One!
      */
-    public func show(msgs:NSString) {// DEFAULT
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 150000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+    public func show(_ msgs:NSString) {// DEFAULT
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 150000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
@@ -1187,18 +1189,18 @@ public extension JHB_HUDManager{
         }
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 60) / 2,msgLabelWidth + 2*kMargin , 60)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 60) / 2,width: msgLabelWidth + 2*kMargin , height: 60)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + 60)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth + 10
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(0)
         
     }
-    public func showWithType(msgs:NSString,HudType:HUDType){
+    public func showWithType(_ msgs:NSString,HudType:HUDType){
         self.type = HudType.hashValue
         
         switch HudType {
@@ -1224,7 +1226,7 @@ public extension JHB_HUDManager{
     }
     
     // 1⃣️原位置不变
-    private func EffectShowMsgsAboutStablePosition(msgs:NSString,type:HUDType) {
+    fileprivate func EffectShowMsgsAboutStablePosition(_ msgs:NSString,type:HUDType) {
         
         switch type {
         case .kHUDTypeShowImmediately:
@@ -1238,8 +1240,8 @@ public extension JHB_HUDManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 150000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 150000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
@@ -1250,19 +1252,19 @@ public extension JHB_HUDManager{
         }
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 60) / 2,msgLabelWidth + 2*kMargin , 60)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 )
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 60) / 2,width: msgLabelWidth + 2*kMargin , height: 60)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 )
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth-20
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(2)
     }
     
     // 2⃣️上下相关
-    private func EffectShowMsgsAboutTopAndBottom(msgs:NSString,type:HUDType)  {
+    fileprivate func EffectShowMsgsAboutTopAndBottom(_ msgs:NSString,type:HUDType)  {
         
         var value : CGFloat = 0
         switch type {
@@ -1277,8 +1279,8 @@ public extension JHB_HUDManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 150000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 150000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
@@ -1289,19 +1291,19 @@ public extension JHB_HUDManager{
         }
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 60) / 2,msgLabelWidth + 2*kMargin , 60)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + value)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 60) / 2,width: msgLabelWidth + 2*kMargin , height: 60)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 + value)
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth-20
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(0)
     }
     
     // 3⃣️左右相关
-    private func EffectShowMsgsAboutLeftAndRight(msgs:NSString,type:HUDType)  {
+    fileprivate func EffectShowMsgsAboutLeftAndRight(_ msgs:NSString,type:HUDType)  {
         
         var value : CGFloat = 0
         switch type {
@@ -1316,8 +1318,8 @@ public extension JHB_HUDManager{
             break
         }
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 150000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 150000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
@@ -1328,22 +1330,22 @@ public extension JHB_HUDManager{
         }
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - msgLabelWidth) / 2, (SCREEN_HEIGHT - 60) / 2,msgLabelWidth + 2*kMargin , 60)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2 + value, SCREEN_HEIGHT / 2 )
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - msgLabelWidth) / 2, y: (SCREEN_HEIGHT - 60) / 2,width: msgLabelWidth + 2*kMargin , height: 60)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2 + value, y: SCREEN_HEIGHT / 2 )
         self.ResetWindowPosition()
         
         self.coreView.msgLabelWidth = msgLabelWidth-20
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgShow", object: nil)
+        self.coreView.kContent = msgs as String as String as NSString
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgShow"), object: nil)
         self.coreViewShowAndHideWithAnimation(0)
     }
     
     // 4⃣️内外相关
-    private func EffectShowMsgsAboutInsideAndOutside(msgs:NSString,type:HUDType)  {
+    fileprivate func EffectShowMsgsAboutInsideAndOutside(_ msgs:NSString,type:HUDType)  {
         
-        coreViewRect = msgs.boundingRectWithSize(CGSizeMake(self.coreView.msgLabel.bounds.width, 150000), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [
-            NSFontAttributeName:UIFont.systemFontOfSize(15.0)
+        coreViewRect = msgs.boundingRect(with: CGSize(width: self.coreView.msgLabel.bounds.width, height: 150000), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [
+            NSFontAttributeName:UIFont.systemFont(ofSize: 15.0)
             ], context: nil)
         var msgLabelWidth = coreViewRect.width
         let msgLabelHeight = coreViewRect.height
@@ -1372,29 +1374,29 @@ public extension JHB_HUDManager{
         
         self.coreView.msgLabelWidth = msgLabelWidth-20
         self.coreView.msgLabelHeight = msgLabelHeight
-        self.coreView.kContent = msgs as String
+        self.coreView.kContent = msgs as String as String as NSString
         
         self.coreView.actView.stopAnimating()
-        self.coreView.frame = CGRectMake((SCREEN_WIDTH - iniWidthValue) / 2, (SCREEN_HEIGHT - 60) / 2,iniWidthValue + 2*kMargin , 60)
-        self.coreView.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.coreView.frame = CGRect(x: (SCREEN_WIDTH - iniWidthValue) / 2, y: (SCREEN_HEIGHT - 60) / 2,width: iniWidthValue + 2*kMargin , height: 60)
+        self.coreView.center = CGPoint(x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2)
         self.ResetWindowPosition()
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUD_onlyAMsgShowWithScale", object: kScaleValue)
-        UIView.animateWithDuration(0.65, animations: {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUD_onlyAMsgShowWithScale"), object: kScaleValue)
+        UIView.animate(withDuration: 0.65, animations: {
             self.coreView.alpha = 1
-            self.coreView.transform = CGAffineTransformScale(self.coreView.transform, kScaleValue, kScaleValue)
-            self.coreView.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
+            self.coreView.transform = self.coreView.transform.scaledBy(x: kScaleValue, y: kScaleValue)
+            self.coreView.center = CGPoint(x: UIScreen.main.bounds.size.width / 2, y: UIScreen.main.bounds.size.height / 2)
             self.setNeedsDisplay()
-        }) { (true) in
-            self.performSelector(#selector(JHB_HUDManager.selfCoreViewRemoveFromSuperview), withObject: self, afterDelay: 1.5)
-        }
+        }, completion: { (true) in
+            self.perform(#selector(JHB_HUDManager.selfCoreViewRemoveFromSuperview), with: self, afterDelay: 1.5)
+        }) 
         
     }
     
     // MARK: - 隐藏(Hidden❤️Default Type:dissolveToTop)
     public func hideProgress() {// DEFAULT
-        self.performSelector(#selector(JHB_HUDManager.hideWithAnimation), withObject: self, afterDelay: 0.6)
+        self.perform(#selector(JHB_HUDManager.hideWithAnimation), with: self, afterDelay: 0.6)
     }
-    private func hideHud() {
+    fileprivate func hideHud() {
         self.hideProgress()
     }
     
@@ -1405,17 +1407,17 @@ public extension JHB_HUDManager{
         self.removeFromSuperview()
         self.RemoveNotification()
         self.dismiss()
-        InitOrientation = UIDevice.currentDevice().orientation
-        NSNotificationCenter.defaultCenter().postNotificationName("JHB_HUDTopVcCanRotated", object: nil, userInfo: nil)
+        InitOrientation = UIDevice.current.orientation
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "JHB_HUDTopVcCanRotated"), object: nil, userInfo: nil)
     }
     /*************➕保持适应屏幕旋转前提下实现添加➕************/
     func ResetWindowPosition() {
         let window = UIWindow()
-        window.backgroundColor = UIColor.clearColor()
-        window.frame = CGRectMake(0, 0, (UIApplication.sharedApplication().keyWindow?.bounds.size.width)!,(UIApplication.sharedApplication().keyWindow?.bounds.size.height)!)
+        window.backgroundColor = UIColor.clear
+        window.frame = CGRect(x: 0, y: 0, width: (UIApplication.shared.keyWindow?.bounds.size.width)!,height: (UIApplication.shared.keyWindow?.bounds.size.height)!)
         window.windowLevel = UIWindowLevelAlert
         window.center = self.getCenter()
-        window.hidden = false
+        window.isHidden = false
         window.addSubview(self)
         windowsTemp.append(window)
     }
